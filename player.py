@@ -27,9 +27,6 @@ class Player(Entity):
     def input(self):
         keys = pg.key.get_pressed()
 
-        # old_pos = deepcopy(self.hit_box)
-        # self.is_moving = False
-
         if keys[pg.K_w]:
             self.vector.y = -1
         if keys[pg.K_s]:
@@ -44,16 +41,11 @@ class Player(Entity):
 
         self.moving()
 
-        # if self.hit_box != old_pos:
-        #     self.is_moving = True
-
         if keys[self.abilities['create_fireball']['key']]:
             self.abilities['create_fireball']['method'](self)
-
-        if keys[self.abilities['create_frostbolt']['key']]:
+        elif keys[self.abilities['create_frostbolt']['key']]:
             self.abilities['create_frostbolt']['method'](self)
-
-        if keys[self.abilities['create_bullet']['key']]:
+        elif keys[self.abilities['create_bullet']['key']]:
             self.abilities['create_bullet']['method'](self)
 
     def follow_mouse(self):
@@ -72,21 +64,3 @@ class Player(Entity):
         self.follow_mouse()
         self.collide_bullets(enemy_bullets)
         self.my_effects.update(offset)
-
-
-    # def collide_obstacles(self, direction):
-    #     if direction == 'h':
-    #         for sprite in self.obstacles:
-    #             if self.rect.colliderect(sprite):
-    #                 if self.vector.x > 0:
-    #                     self.rect.right = sprite.rect.left
-    #                 if self.vector.x < 0:
-    #                     self.rect.left = sprite.rect.right
-    #
-    #     if direction == 'v':
-    #         for sprite in self.obstacles:
-    #             if self.rect.colliderect(sprite):
-    #                 if self.vector.y > 0:
-    #                     self.rect.bottom = sprite.rect.top
-    #                 if self.vector.y < 0:
-    #                     self.rect.top = sprite.rect.bottom

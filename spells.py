@@ -95,8 +95,6 @@ class Bullet(ProjectileSpell):
         self.rotatable = False
 
 
-
-
 class Frostblot(ProjectileSpell):
     def __init__(self, groups, player, obstacles):
         super().__init__(groups, player, obstacles)

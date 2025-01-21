@@ -14,6 +14,7 @@ class Game:
 
         self.display = pg.display.set_mode((WIDTH, HEIGHT))
         self.clock = pg.time.Clock()
+        self.running = True
 
         self.visible_sprites = pg.sprite.Group()
         self.obstacle_sprite = pg.sprite.Group()
@@ -27,16 +28,9 @@ class Game:
                           }
 
         self.player = Player([], (0, 0), self.abilities, self.obstacle_sprite)
-
-
-
-        self.hotkeys = HotKeys(self.abilities)
-
         self.offset = pg.math.Vector2()
-
+        self.hotkeys = HotKeys(self.abilities)
         self.create_map()
-
-        self.running = True
 
     def create_map(self):
         for y, map_string in enumerate(MAP):
@@ -82,6 +76,8 @@ class Game:
 
         if self.player.is_dead():
             self.running = False
+
+        print(self.bullets)
 
         pg.display.update()
 
