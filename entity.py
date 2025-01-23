@@ -40,6 +40,15 @@ class Entity(pg.sprite.Sprite):
         self.vector.x = 0
         self.vector.y = 0
 
+    def is_los(self, player, offset):
+        line_start = self.rect.center
+        line_end = player.rect.center
+        for obstacle in self.obstacles:
+            if obstacle.rect.clipline(line_start, line_end):
+                pg.draw.line(self.display, 'black', line_start - offset, line_end - offset, 2)
+                return True
+        return False
+
     def is_dead(self):
         is_dead = self.health <= 0
         if is_dead:

@@ -6,3 +6,4 @@ __pycache__/
 *.env
 *.log
 *.sqlite3
+test_things/

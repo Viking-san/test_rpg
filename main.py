@@ -77,8 +77,6 @@ class Game:
         if self.player.is_dead():
             self.running = False
 
-        print(self.bullets)
-
         pg.display.update()
 
     def run(self):

@@ -45,6 +45,7 @@ class Sceleton(Entity):
 
         distance = self.get_distance_and_direction(player)
         self.make_decision(distance)
+        self.is_los(player, offset)
 
 
 class FireElemental(Entity):
