@@ -45,9 +45,9 @@ class Entity(pg.sprite.Sprite):
         line_end = player.rect.center
         for obstacle in self.obstacles:
             if obstacle.rect.clipline(line_start, line_end):
-                pg.draw.line(self.display, 'black', line_start - offset, line_end - offset, 2)
-                return True
-        return False
+                # pg.draw.line(self.display, 'black', line_start - offset, line_end - offset, 2)
+                return False
+        return True
 
     def is_dead(self):
         is_dead = self.health <= 0
@@ -77,10 +77,7 @@ class Entity(pg.sprite.Sprite):
             if self.rect.colliderect(sprite):
                 if sprite.is_casting:
                     continue
-                current_health = self.health
                 self.health -= sprite.damage
-                # if self.health < current_health:
-                #     self.is_attacked = True
                 print(int(self.health))
                 self.my_effects.add_effect(sprite.effects)
 

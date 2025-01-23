@@ -27,7 +27,7 @@ class Game:
                           'create_frostbolt': {'method': self.create_frostbolt, 'key': pg.K_r, 'sprite': 'sprite/frostbolt.png'},
                           }
 
-        self.player = Player([], (0, 0), self.abilities, self.obstacle_sprite)
+        self.player = Player([], (50, 50), self.abilities, self.obstacle_sprite)
         self.offset = pg.math.Vector2()
         self.hotkeys = HotKeys(self.abilities)
         self.create_map()

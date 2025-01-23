@@ -3,6 +3,7 @@ from interface import Bars
 from copy import copy, deepcopy
 from effects import *
 from entity import Entity
+from pathfinder import Pathfinder
 
 
 class Sceleton(Entity):
@@ -31,11 +32,21 @@ class Sceleton(Entity):
     def attack(self):
         self.abilities['create_bullet']['method'](self)
 
-    def make_decision(self, distance):
-        if distance <= self.attack_radius:
+    def make_decision(self, distance, player, offset):
+        if distance > self.agro_radius:
+            return
+
+        if not self.is_los(player, offset):
+            Pathfinder(self, player, offset)
+        elif distance <= self.attack_radius:
             self.attack()
-        elif distance <= self.agro_radius:
+        else:
             self.moving()
+
+        # if distance <= self.attack_radius:
+        #     self.attack()
+        # elif distance <= self.agro_radius:
+        #     self.moving()
 
     def update(self, offset, player, player_bullets):
         if self.is_dead():
@@ -44,8 +55,7 @@ class Sceleton(Entity):
         self.my_effects.update(offset)
 
         distance = self.get_distance_and_direction(player)
-        self.make_decision(distance)
-        self.is_los(player, offset)
+        self.make_decision(distance, player, offset)
 
 
 class FireElemental(Entity):
