@@ -4,6 +4,7 @@ from interface import *
 # from spells import *
 from effects import MyEffects
 from copy import copy
+from pathfinder import Pathfinder
 
 
 class Entity(pg.sprite.Sprite):
@@ -24,6 +25,9 @@ class Entity(pg.sprite.Sprite):
         self.is_attacked = False
 
         self.my_effects = MyEffects(self)
+        self.pathfinder = Pathfinder()
+        self.path = []
+        self.pathfinder_control = False
 
     def moving(self):
         self.is_moving = False
@@ -36,16 +40,16 @@ class Entity(pg.sprite.Sprite):
 
         if self.hit_box.center != current_pos:
             self.is_moving = True
+            self.is_casting = False
 
         self.vector.x = 0
         self.vector.y = 0
 
-    def is_los(self, player, offset):
+    def is_los(self, player):
         line_start = self.rect.center
         line_end = player.rect.center
         for obstacle in self.obstacles:
             if obstacle.rect.clipline(line_start, line_end):
-                # pg.draw.line(self.display, 'black', line_start - offset, line_end - offset, 2)
                 return False
         return True
 
@@ -65,7 +69,8 @@ class Entity(pg.sprite.Sprite):
 
         if direction:
             direction.normalize_ip()
-            self.vector = deepcopy(direction)
+            if not self.pathfinder_control:
+                self.vector = deepcopy(direction)
             self.angle = polar_vector.angle_to(direction)
 
         return distance

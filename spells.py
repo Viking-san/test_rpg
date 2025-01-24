@@ -7,11 +7,12 @@ class ProjectileSpell(pg.sprite.Sprite):
     def __init__(self, groups, player, obstacles):
         super().__init__(groups)
 
+        print('projectile created')
         self.is_casting = True
         self.player = player
         if self.player.is_casting:
             self.kill()
-
+        self.player.is_casting = True
         self.display = pg.display.get_surface()
         self.rotatable = True
 
@@ -49,8 +50,9 @@ class ProjectileSpell(pg.sprite.Sprite):
         if current_time >= cast_is_over_time:
             if self.is_casting:
                 self.rotate()
-            self.is_casting = False
-            self.damage = self.attack
+                self.is_casting = False
+                self.player.is_casting = False
+                self.damage = self.attack
 
         if current_time >= cast_is_over_time + self.ttl:
             self.kill()
@@ -61,10 +63,12 @@ class ProjectileSpell(pg.sprite.Sprite):
 
     def update(self, offset):
         self.collide_obstacles()
-        self.player.is_casting = self.is_casting
+        print('is casting changed in spell.update')
+        # self.player.is_casting = self.is_casting
         self.timer(offset)
         if self.is_casting:
             if self.player.is_moving or self.player.is_attacked or self.player.is_dead():
+                self.is_casting = False
                 self.player.is_casting = False
                 self.kill()
             return

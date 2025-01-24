@@ -81,6 +81,7 @@ class Game:
 
     def run(self):
         while self.running:
+
             self.draw()
             self.clock.tick(FPS)
             for event in pg.event.get():
