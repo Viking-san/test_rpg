@@ -7,7 +7,6 @@ class ProjectileSpell(pg.sprite.Sprite):
     def __init__(self, groups, player, obstacles):
         super().__init__(groups)
 
-        print('projectile created')
         self.is_casting = True
         self.player = player
         if self.player.is_casting:
@@ -63,7 +62,6 @@ class ProjectileSpell(pg.sprite.Sprite):
 
     def update(self, offset):
         self.collide_obstacles()
-        print('is casting changed in spell.update')
         # self.player.is_casting = self.is_casting
         self.timer(offset)
         if self.is_casting:
@@ -104,6 +102,7 @@ class Frostblot(ProjectileSpell):
         super().__init__(groups, player, obstacles)
 
         self.surf = pg.image.load('sprite/frostbolt.png').convert_alpha()
+        self.surf = pg.transform.scale(self.surf, (20, 20))
         self.image = pg.transform.rotate(self.surf, -self.angle)
         self.rect = self.image.get_rect(center=self.player.rect.center)
 
@@ -124,6 +123,7 @@ class Fireball(ProjectileSpell):
         super().__init__(groups, player, obstacles)
 
         self.surf = pg.image.load('sprite/fireball.png').convert_alpha()
+        self.surf = pg.transform.scale(self.surf, (20, 20))
         self.image = pg.transform.rotate(self.surf, -self.angle)
         self.rect = self.image.get_rect(center=self.player.rect.center)
 

@@ -13,7 +13,6 @@ class Sceleton(Entity):
         self.original_surf = pg.image.load('sprite/enemy.png')
         self.image = copy(self.original_surf)
         self.rect = self.image.get_rect(topleft=(pos))
-        # self.hit_box = deepcopy(self.rect)
         self.hit_box = self.rect.inflate(-6, -6)
 
         self.health = 900
@@ -33,31 +32,16 @@ class Sceleton(Entity):
         self.abilities['create_bullet']['method'](self)
 
     def make_decision(self, distance, player, offset):
-        if distance > self.agro_radius:
+
+        if distance > self.agro_radius or self.pathfinder_control:
             return
 
-        self.lock_on_player = True
-        if not self.is_los(player, offset):
-            self.lock_on_player = False
-            if not self.path:
-                self.pathfinder.set_points(self, player)
-                self.path = self.pathfinder.get_path_rects()
-
-            point = self.path[0]
-            self.go_to_point(point)
-
-            # print path
-            # for rect in self.path:
-            #     x = rect.x - offset.x
-            #     y = rect.y - offset.y
-            #     pg.draw.rect(self.display, 'black', (x, y, *rect.size))
-
+        if not self.is_los(player):
+            self.pathfinder.go_find(self, player, offset)
         elif distance <= self.attack_radius:
             self.attack()
-            self.path = []
         else:
             self.moving()
-            self.path = []
 
     def update(self, offset, player, player_bullets):
         if self.is_dead():
@@ -68,6 +52,9 @@ class Sceleton(Entity):
         distance = self.get_distance_and_direction(player)
         self.make_decision(distance, player, offset)
 
+        if self.pathfinder_control:
+            self.pathfinder.update(self, offset)
+
 
 class FireElemental(Entity):
     def __init__(self, groups, pos, abilities, obstacles):
@@ -77,7 +64,6 @@ class FireElemental(Entity):
         self.original_surf = pg.image.load('sprite/fireelemental.png')
         self.image = copy(self.original_surf)
         self.rect = self.image.get_rect(topleft=(pos))
-        # self.hit_box = deepcopy(self.rect)
         self.hit_box = self.rect.inflate(-6, -6)
 
         self.health = 1900
@@ -89,7 +75,7 @@ class FireElemental(Entity):
         self.hp_bar = Bars(50, 8, 'green', self.max_health)
 
         self.agro_radius = 400
-        self.attack_radius = 50
+        self.attack_radius = 250
 
         self.obstacles = obstacles
 
@@ -98,10 +84,7 @@ class FireElemental(Entity):
 
     def make_decision(self, distance, player, offset):
 
-        if distance > self.agro_radius:
-            return
-
-        if self.pathfinder_control:
+        if distance > self.agro_radius or self.pathfinder_control:
             return
 
         if not self.is_los(player):
@@ -123,5 +106,3 @@ class FireElemental(Entity):
 
         if self.pathfinder_control:
             self.pathfinder.update(self, offset)
-
-        print(self.is_casting)
