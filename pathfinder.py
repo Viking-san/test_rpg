@@ -36,7 +36,7 @@ class Pathfinder:
                 break
             x = point.x * 32 + 13
             y = point.y * 32 + 13
-            rect = pg.Rect((x, y, 3, 3))
+            rect = pg.Rect((x, y, 6, 6))
             self.path_rects.append(rect)
 
     def make_matrix(self):
@@ -53,12 +53,10 @@ class Pathfinder:
             pos = rect.center - offset
             pg.draw.rect(self.display, 'black', (pos, rect.size))
 
-    def go_find(self, seeker, goal, offset):
-        # offset to draw
+    def go_find(self, seeker, goal):
         if not seeker.pathfinder_control:
             self.set_points(seeker, goal)
             self.get_path_rects()
-            self.draw_path(offset)
             seeker.pathfinder_control = True
 
     def collision_check(self, seeker):
@@ -79,7 +77,7 @@ class Pathfinder:
         self.collision_check(seeker)
 
     def update(self, seeker, offset):
-        self.draw_path(offset)
+        # self.draw_path(offset)
         if self.path_rects:
             self.dot_chaser(seeker)
         else:

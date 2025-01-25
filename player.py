@@ -12,7 +12,7 @@ class Player(Entity):
         self.original_surf = pg.image.load('sprite/ship.png').convert_alpha()
         self.image = copy(self.original_surf)
         self.rect = self.image.get_rect(topleft=pos)
-        self.hit_box = deepcopy(self.rect)
+        self.hit_box = self.rect.inflate(-6, -6)
 
         self.health = 1050
         self.max_health = 1500
@@ -47,6 +47,8 @@ class Player(Entity):
             self.abilities['create_frostbolt']['method'](self)
         elif keys[self.abilities['create_bullet']['key']]:
             self.abilities['create_bullet']['method'](self)
+        elif keys[self.abilities['flame_strike']['key']]:
+            self.abilities['flame_strike']['method'](self, pg.math.Vector2(pg.mouse.get_pos()))
 
     def follow_mouse(self):
         polar_vector = pg.math.Vector2(0, -1)

@@ -3,7 +3,7 @@ from copy import copy
 
 
 class Freeze:
-    def __init__(self, entity, tick_time, damage):
+    def __init__(self, entity, data):
         print('freeze')
         self.type = 'freeze'
         self.entity = entity
@@ -50,8 +50,9 @@ class Freeze:
 
 
 class Burning:
-    def __init__(self, entity, tick_time, damage):
+    def __init__(self, entity, data):
         print('burning')
+        _, tick_time, damage = data.split('|')
         self.type = 'burning'
         self.entity = entity
         self.icon = pg.image.load('sprite/burns.png').convert_alpha()
@@ -104,6 +105,40 @@ class Burning:
         return self.expire
 
 
+class Slow:
+    def __init__(self, entity, data):
+        self.type = 'slow'
+        self.entity = entity
+        self.icon = pg.image.load('sprite/burns.png').convert_alpha()
+
+        self.works_time = 1500
+
+        self.begin_at = pg.time.get_ticks()
+        self.expire = False
+
+        self.change_entity()
+
+    def restore_entity(self):
+        self.entity.speed = self.entity.original_speed
+        self.expire = True
+
+    def change_entity(self):
+        if self.entity.speed >= 1:
+            self.entity.speed = 1
+
+    def timer(self):
+        current_time = pg.time.get_ticks()
+
+        if current_time >= self.works_time + self.begin_at:
+            print('unslow')
+            self.restore_entity()
+
+    def update(self):
+        self.change_entity()
+        self.timer()
+        return self.expire
+
+
 class MyEffects:
     def __init__(self, entity):
         self.my_effects = []
@@ -112,6 +147,7 @@ class MyEffects:
         self.all_effects = {
             'freeze': Freeze,
             'burning': Burning,
+            'slow': Slow,
         }
 
     def add_effect(self, effects):
@@ -119,11 +155,11 @@ class MyEffects:
             return
 
         for effect in effects:
-            effect = effect.split('|')
+            effect0 = effect.split('|')[0]
             for my_effect in self.my_effects:
-                if effect[0] == my_effect.type:
+                if effect0 == my_effect.type:
                     self.my_effects.remove(my_effect)
-            self.my_effects.append(self.all_effects[effect[0]](self.entity, effect[1], effect[2]))
+            self.my_effects.append(self.all_effects[effect0](self.entity, effect))
 
     def update(self, offset):
         for effect in self.my_effects:

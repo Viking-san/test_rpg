@@ -19,37 +19,63 @@ class Entity(pg.sprite.Sprite):
         self.speed = 1
         self.vector = pg.math.Vector2()
         self.offset = pg.math.Vector2()
+        # self.position = None
 
         self.is_casting = False
         self.is_moving = False
         self.is_attacked = False
 
         self.my_effects = MyEffects(self)
+
         self.pathfinder = Pathfinder()
-        self.path = []
         self.pathfinder_control = False
+
+        # # collide_entities
+        # self.group = groups[0]
 
     def moving(self):
         self.is_moving = False
-        current_pos = deepcopy(self.hit_box.center)
+        self.current_pos = deepcopy(self.hit_box.center)
 
         self.hit_box.x += self.vector.x * self.speed
         self.collide_obstacles('h')
         self.hit_box.y += self.vector.y * self.speed
         self.collide_obstacles('v')
 
-        if self.hit_box.center != current_pos:
+        if self.hit_box.center != self.current_pos:
             self.is_moving = True
             self.is_casting = False
 
         self.vector.x = 0
         self.vector.y = 0
 
+        # # collide_entities
+        # self.collide_entities()
+
+    # # collide_entities
+    # def collide_entities(self):
+    #     for sprite in self.group:
+    #         if sprite.hit_box == self.hit_box:
+    #             continue
+    #         if sprite.hit_box.colliderect(self.hit_box):
+    #             self.hit_box.center = deepcopy(self.current_pos)
+
     def is_los(self, player):
-        line_start = self.rect.center
-        line_end = player.rect.center
+        tl_start = self.hit_box.topleft + pg.math.Vector2(3, 3)
+        tl_end = player.hit_box.topleft + pg.math.Vector2(3, 3)
+        tr_start = self.hit_box.topright + pg.math.Vector2(-3, 3)
+        tr_end = player.hit_box.topright + pg.math.Vector2(-3, 3)
+        bl_start = self.hit_box.bottomleft + pg.math.Vector2(3, -3)
+        bl_end = player.hit_box.bottomleft + pg.math.Vector2(3, -3)
+        br_start = self.hit_box.bottomright + pg.math.Vector2(-3, -3)
+        br_end = player.hit_box.bottomright + pg.math.Vector2(-3, -3)
+
         for obstacle in self.obstacles:
-            if obstacle.rect.clipline(line_start, line_end):
+            check = any([obstacle.rect.clipline(tl_start, tl_end),
+                         obstacle.rect.clipline(tr_start, tr_end),
+                         obstacle.rect.clipline(br_start, br_end),
+                         obstacle.rect.clipline(bl_start, bl_end)])
+            if check:
                 return False
         return True
 
@@ -86,7 +112,8 @@ class Entity(pg.sprite.Sprite):
                 print(int(self.health))
                 self.my_effects.add_effect(sprite.effects)
 
-                sprite.kill()
+                if sprite.type not in ['flame_strike']:
+                    sprite.kill()
 
     def collide_obstacles(self, direction):
         if direction == 'h':

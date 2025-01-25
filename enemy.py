@@ -14,6 +14,7 @@ class Sceleton(Entity):
         self.image = copy(self.original_surf)
         self.rect = self.image.get_rect(topleft=(pos))
         self.hit_box = self.rect.inflate(-6, -6)
+        self.current_pos = deepcopy(self.hit_box.center)
 
         self.health = 900
         self.max_health = 900
@@ -27,22 +28,28 @@ class Sceleton(Entity):
         self.attack_radius = 150
 
         self.obstacles = obstacles
+        # self.group = groups[0]
 
     def attack(self):
         self.abilities['create_bullet']['method'](self)
 
-    def make_decision(self, distance, player, offset):
+    # def collide_entities(self):
+    #     for sprite in self.group:
+    #         if sprite.hit_box == self.hit_box:
+    #             continue
+    #         if sprite.hit_box.colliderect(self.hit_box):
+    #             self.hit_box.center = deepcopy(self.current_pos)
 
+    def make_decision(self, distance, player):
         if distance > self.agro_radius or self.pathfinder_control:
             return
 
         if not self.is_los(player):
-            self.pathfinder.go_find(self, player, offset)
+            self.pathfinder.go_find(self, player)
         elif distance <= self.attack_radius:
             self.attack()
         else:
             self.moving()
-
     def update(self, offset, player, player_bullets):
         if self.is_dead():
             self.kill()
@@ -50,10 +57,12 @@ class Sceleton(Entity):
         self.my_effects.update(offset)
 
         distance = self.get_distance_and_direction(player)
-        self.make_decision(distance, player, offset)
+        self.make_decision(distance, player)
 
         if self.pathfinder_control:
             self.pathfinder.update(self, offset)
+
+
 
 
 class FireElemental(Entity):
@@ -82,13 +91,12 @@ class FireElemental(Entity):
     def attack(self):
         self.abilities['create_fireball']['method'](self)
 
-    def make_decision(self, distance, player, offset):
-
+    def make_decision(self, distance, player):
         if distance > self.agro_radius or self.pathfinder_control:
             return
 
         if not self.is_los(player):
-            self.pathfinder.go_find(self, player, offset)
+            self.pathfinder.go_find(self, player)
         elif distance <= self.attack_radius:
             self.attack()
         else:
@@ -102,7 +110,7 @@ class FireElemental(Entity):
         self.my_effects.update(offset)
 
         distance = self.get_distance_and_direction(player)
-        self.make_decision(distance, player, offset)
+        self.make_decision(distance, player)
 
         if self.pathfinder_control:
             self.pathfinder.update(self, offset)

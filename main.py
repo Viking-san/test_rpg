@@ -21,13 +21,15 @@ class Game:
         self.bullets = pg.sprite.Group()
         self.enemy_bullet = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
+        self.entities = pg.sprite.Group()
 
         self.abilities = {'create_bullet': {'method': self.create_bullet, 'key': 101, 'sprite': 'sprite/bullet.png'},
                           'create_fireball': {'method': self.create_fireball, 'key': pg.K_f, 'sprite': 'sprite/fireball.png'},
                           'create_frostbolt': {'method': self.create_frostbolt, 'key': pg.K_r, 'sprite': 'sprite/frostbolt.png'},
+                          'flame_strike': {'method': self.flame_strike, 'key': pg.K_q, 'sprite': 'sprite/flame_strike_attack.png'},
                           }
 
-        self.player = Player([], (50, 50), self.abilities, self.obstacle_sprite)
+        self.player = Player([self.entities], (50, 50), self.abilities, self.obstacle_sprite)
         self.offset = pg.math.Vector2()
         self.hotkeys = HotKeys(self.abilities)
         self.create_map()
@@ -39,9 +41,9 @@ class Game:
                 if tile == 'x':
                     Tile([self.visible_sprites], pos)
                 elif tile == 'e':
-                    Sceleton([self.enemies], pos, self.abilities, self.obstacle_sprite)
+                    Sceleton([self.entities, self.enemies], pos, self.abilities, self.obstacle_sprite)
                 elif tile == 'f':
-                    FireElemental([self.enemies], pos, self.abilities, self.obstacle_sprite)
+                    FireElemental([self.entities, self.enemies], pos, self.abilities, self.obstacle_sprite)
                 elif tile == 'w':
                     ObstacleTile([self.visible_sprites, self.obstacle_sprite], pos)
 
@@ -108,6 +110,9 @@ class Game:
 
     def create_frostbolt(self, attacker):
         Frostblot([self.visible_sprites, self.bullet_group(attacker)], attacker, self.obstacle_sprite)
+
+    def flame_strike(self, attacker, pos):
+        FlameStrike([self.visible_sprites, self.bullet_group(attacker)], attacker, pos + self.offset)
 
 
 game = Game()

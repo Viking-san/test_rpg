@@ -1,6 +1,7 @@
 import pygame as pg
 from interface import Bars
 from config import *
+from copy import copy
 
 
 class ProjectileSpell(pg.sprite.Sprite):
@@ -85,7 +86,7 @@ class Bullet(ProjectileSpell):
         self.rect = self.image.get_rect(center=self.player.rect.center)
 
         self.type = 'bullet'
-        self.attack = 1
+        self.attack = 0
         self.speed = 9
 
         self.ttl = 1000
@@ -137,3 +138,68 @@ class Fireball(ProjectileSpell):
         self.cast_bar = Bars(50, 8, 'red', self.cast_time)
 
         self.effects = [f'burning|{str(self.cast_time)}|{str(self.attack)}']
+
+
+class FlameStrike(pg.sprite.Sprite):
+    def __init__(self, groups, player, pos):
+        super().__init__(groups)
+
+        self.surf1 = pg.image.load('sprite/flame_strike_cast.png').convert_alpha()
+        self.surf2 = pg.image.load('sprite/flame_strike_attack.png').convert_alpha()
+        self.image = copy(self.surf1)
+        self.rect = self.image.get_rect(center=pos)
+
+        self.is_casting = True
+        self.player = player
+        if self.player.is_casting:
+            self.kill()
+        self.player.is_casting = True
+        self.display = pg.display.get_surface()
+
+        self.distance = 200
+        pos_vector = pg.math.Vector2(pos)
+        player_vector = pg.math.Vector2(player.rect.center)
+        distance = (player_vector - pos_vector).magnitude()
+        if self.distance < distance:
+            self.is_casting = False
+            player.is_casting = False
+            self.kill()
+
+        self.cast_time = 300
+        self.cast_time_start = pg.time.get_ticks()
+        self.attack = 1
+        self.damage = 0
+        self.ttl = 2000
+        self.type = 'flame_strike'
+        self.effects = ['slow']
+        self.current_cast_time = 0
+
+        self.cast_bar = Bars(50, 8, 'red', self.cast_time)
+
+    def timer(self, offset):
+        current_time = pg.time.get_ticks()
+        cast_is_over_time = self.cast_time + self.cast_time_start
+        self.current_cast_time = current_time - self.cast_time_start
+
+        if current_time >= cast_is_over_time:
+            if self.is_casting:
+                self.is_casting = False
+                self.player.is_casting = False
+                self.damage = self.attack
+                self.image = copy(self.surf2)
+
+        if current_time >= cast_is_over_time + self.ttl:
+            self.kill()
+
+        if self.is_casting:
+            pos = self.player.hit_box.center - offset + (-25, -25)
+            self.cast_bar.draw(self.display, current_time - self.cast_time_start, pos)
+
+    def update(self, offset):
+        self.timer(offset)
+        if self.is_casting:
+            if self.player.is_moving or self.player.is_attacked or self.player.is_dead():
+                self.is_casting = False
+                self.player.is_casting = False
+                self.kill()
+            return
