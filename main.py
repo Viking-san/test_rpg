@@ -6,6 +6,7 @@ from tiles import *
 from interface import *
 # from spells import *
 from ability_storage import AllAbilities
+from npc import Peasant
 
 
 class Game:
@@ -22,7 +23,7 @@ class Game:
         self.bullets = pg.sprite.Group()
         self.enemy_bullet = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
-        self.entities = pg.sprite.Group()
+        self.npc = pg.sprite.Group()
 
         sprite_groups_for_abilities = {
             'visible_sprites': self.visible_sprites,
@@ -33,9 +34,9 @@ class Game:
         self.all_abilities = AllAbilities(sprite_groups_for_abilities)
 
         abilities_for_player = ['create_bullet', 'create_fireball', 'create_frostbolt', 'flame_strike', 'blizzard']
-        self.abilities_for_player = self.all_abilities.get_abilities(abilities_for_player)
-        self.player = Player([self.entities], (50, 50), self.abilities_for_player, self.obstacle_sprite)
-        self.hotkeys = HotKeys(self.abilities_for_player)
+        abilities_for_player = self.all_abilities.get_abilities(abilities_for_player)
+        self.player = Player([], (50, 50), abilities_for_player, self.obstacle_sprite)
+        self.hotkeys = HotKeys(abilities_for_player)
 
         self.offset = pg.math.Vector2()
         self.create_map()
@@ -47,11 +48,13 @@ class Game:
                 if tile == 'x':
                     Tile([self.visible_sprites], pos)
                 elif tile == 'e':
-                    Sceleton([self.entities, self.enemies], pos, self.all_abilities.get_abilities(['create_bullet']), self.obstacle_sprite)
+                    Sceleton([ self.enemies], pos, self.all_abilities.get_abilities(['create_bullet']), self.obstacle_sprite)
                 elif tile == 'f':
-                    FireElemental([self.entities, self.enemies], pos, self.all_abilities.get_abilities(['create_fireball']), self.obstacle_sprite)
+                    FireElemental([self.enemies], pos, self.all_abilities.get_abilities(['create_fireball']), self.obstacle_sprite)
                 elif tile == 'w':
                     ObstacleTile([self.visible_sprites, self.obstacle_sprite], pos)
+                elif tile == 'k':
+                    Peasant([self.npc], pos, self.player)
 
     def camera(self):
         self.offset.x = self.player.rect.centerx - WIDTH // 2
@@ -66,6 +69,10 @@ class Game:
             self.display.blit(sprite.image, offset)
             sprite.hp_bar.draw(self.display, sprite.health, sprite.rect.midbottom - self.offset + (-25, 5))
 
+        for sprite in self.npc:
+            offset = sprite.rect.topleft - self.offset
+            self.display.blit(sprite.image, offset)
+
         self.enemies.update(self.offset, self.player, self.bullets)
 
         offset = self.player.rect.topleft - self.offset
@@ -75,6 +82,8 @@ class Game:
 
         self.bullets.update(self.offset)
         self.enemy_bullet.update(self.offset)
+
+        self.npc.update(self.offset)
 
     def draw(self):
         self.display.fill('white')
