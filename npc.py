@@ -14,7 +14,10 @@ class Peasant(Entity):
     def interact(self):
         mouse_pos = pg.mouse.get_pos() + self.offset
         mouse_lcm = pg.mouse.get_pressed()[0]
-        if self.rect.collidepoint(mouse_pos) and mouse_lcm:
+
+        distance = self.get_distance_and_direction(self.player)
+
+        if self.rect.collidepoint(mouse_pos) and mouse_lcm and distance < 100:
             print('Hello, adventurer!')
 
     def update(self, offset):
