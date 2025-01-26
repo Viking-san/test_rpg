@@ -140,16 +140,20 @@ class Fireball(ProjectileSpell):
         self.effects = [f'burning|{str(self.cast_time)}|{str(self.attack)}']
 
 
-class FlameStrike(pg.sprite.Sprite):
+class AOEOnPoint(pg.sprite.Sprite):
     def __init__(self, groups, player):
         super().__init__(groups)
 
-        self.surf1 = pg.image.load('sprite/flame_strike_cast.png').convert_alpha()
-        self.surf2 = pg.image.load('sprite/flame_strike_attack.png').convert_alpha()
+        self.display = pg.display.get_surface()
+        self.surf1 = copy(DEFAULT_IMAGE)
+        self.surf1 = pg.transform.scale(self.surf1, (64, 64))
+        self.surf2 = copy(DEFAULT_IMAGE)
+        self.surf2 = pg.transform.scale(self.surf2, (64, 64))
         self.image = copy(self.surf1)
         self.offset = player.offset
-        pos = pg.mouse.get_pos()
-        self.rect = self.image.get_rect(center=pos + self.offset)
+        self.pos = pg.mouse.get_pos()
+        self.rect = self.image.get_rect(center=self.pos + self.offset)
+        self.distance = 30
 
         self.is_casting = True
         self.player = player
@@ -158,25 +162,25 @@ class FlameStrike(pg.sprite.Sprite):
         self.player.is_casting = True
         self.display = pg.display.get_surface()
 
-        self.distance = 200
-        pos_vector = pg.math.Vector2(pos + self.offset)
-        player_vector = pg.math.Vector2(player.rect.center)
+        self.cast_time = 1000
+        self.cast_time_start = pg.time.get_ticks()
+        self.current_cast_time = 0
+        self.attack = 1
+        self.damage = 0
+        self.ttl = 1
+        self.type = 'default'
+        self.effects = []
+
+        self.cast_bar = Bars(50, 8, 'red', self.cast_time)
+
+    def check_distance(self):
+        pos_vector = pg.math.Vector2(self.pos + self.offset)
+        player_vector = pg.math.Vector2(self.player.rect.center)
         distance = (player_vector - pos_vector).magnitude()
         if self.distance < distance:
             self.is_casting = False
-            player.is_casting = False
+            self.player.is_casting = False
             self.kill()
-
-        self.cast_time = 300
-        self.cast_time_start = pg.time.get_ticks()
-        self.attack = 1
-        self.damage = 0
-        self.ttl = 2000
-        self.type = 'flame_strike'
-        self.effects = ['slow']
-        self.current_cast_time = 0
-
-        self.cast_bar = Bars(50, 8, 'red', self.cast_time)
 
     def timer(self, offset):
         current_time = pg.time.get_ticks()
@@ -205,3 +209,58 @@ class FlameStrike(pg.sprite.Sprite):
                 self.is_casting = False
                 self.player.is_casting = False
                 self.kill()
+
+
+class FlameStrike(AOEOnPoint):
+    def __init__(self, groups, player):
+        super().__init__(groups, player)
+
+        self.surf1 = pg.image.load('sprite/flame_strike_cast.png').convert_alpha()
+        self.surf1 = pg.transform.scale(self.surf1, (64, 64))
+        self.surf2 = pg.image.load('sprite/flame_strike_attack.png').convert_alpha()
+        self.surf2 = pg.transform.scale(self.surf2, (64, 64))
+        self.image = copy(self.surf1)
+        self.offset = player.offset
+        self.pos = pg.mouse.get_pos()
+        self.rect = self.image.get_rect(center=self.pos + self.offset)
+
+        self.distance = 150
+        self.check_distance()
+
+        self.cast_time = 400
+        self.cast_time_start = pg.time.get_ticks()
+        self.current_cast_time = 0
+        self.attack = 1
+        self.damage = 0
+        self.ttl = 2000
+        self.type = 'flame_strike'
+        self.effects = ['slow']
+
+        self.cast_bar.set_max_value(self.cast_time)
+        
+    
+class Blizzard(AOEOnPoint):
+    def __init__(self, groups, player):
+        super().__init__(groups, player)
+        self.surf1 = pg.image.load('sprite/blizzard_cast.png').convert_alpha()
+        self.surf1 = pg.transform.scale(self.surf1, (64, 64))
+        self.surf2 = pg.image.load('sprite/blizzard_attack.png').convert_alpha()
+        self.surf2 = pg.transform.scale(self.surf2, (64, 64))
+        self.image = copy(self.surf1)
+        self.offset = player.offset
+        self.pos = pg.mouse.get_pos()
+        self.rect = self.image.get_rect(center=self.pos + self.offset)
+
+        self.distance = 300
+        self.check_distance()
+
+        self.cast_time = 200
+        self.cast_time_start = pg.time.get_ticks()
+        self.current_cast_time = 0
+        self.attack = 2
+        self.damage = 0
+        self.ttl = 400
+        self.type = 'flame_strike'
+        self.effects = ['slow']
+
+        self.cast_bar.set_max_value(self.cast_time)

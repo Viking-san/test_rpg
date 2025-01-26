@@ -16,6 +16,9 @@ class Bars:
         pg.draw.rect(display, 'black', (pos[0], pos[1], self.width, self.height))
         pg.draw.rect(display, self.color, (pos[0], pos[1], current_width, self.height))
 
+    def set_max_value(self, value):
+        self.max = value
+
 
 class HotKeys:
     def __init__(self, abilities):
@@ -68,6 +71,7 @@ class HotKeys:
             self.rects.append(rect)
 
             image = pg.image.load(self.abilities[ability]['sprite']).convert_alpha()
+            image = pg.transform.scale(image, (32, 32))
             self.images.append(image)
 
             key_name = pg.key.name(self.abilities[ability]['key'])

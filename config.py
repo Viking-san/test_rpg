@@ -7,6 +7,8 @@ TILE_SIZE = 32
 
 FPS = 60
 
+DEFAULT_IMAGE = pg.image.load('sprite/default.png')
+
 MAP = [
     'wwwwwwwwwwwwwwwwwwwwwwwwwww',
     'wx x x x x x x x xwx x x ww',

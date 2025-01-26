@@ -32,9 +32,10 @@ class Game:
         }
         self.all_abilities = AllAbilities(sprite_groups_for_abilities)
 
-        abilities_for_player = ['create_bullet', 'create_fireball', 'create_frostbolt', 'flame_strike']
-        self.player = Player([self.entities], (50, 50), self.all_abilities.get_abilities(abilities_for_player), self.obstacle_sprite)
-        self.hotkeys = HotKeys(self.all_abilities.get_abilities(abilities_for_player))
+        abilities_for_player = ['create_bullet', 'create_fireball', 'create_frostbolt', 'flame_strike', 'blizzard']
+        self.abilities_for_player = self.all_abilities.get_abilities(abilities_for_player)
+        self.player = Player([self.entities], (50, 50), self.abilities_for_player, self.obstacle_sprite)
+        self.hotkeys = HotKeys(self.abilities_for_player)
 
         self.offset = pg.math.Vector2()
         self.create_map()
@@ -100,6 +101,7 @@ class Game:
                         k = event.key
                         if rect_id != -1 and k not in self.hotkeys.busy_keys:
                             self.hotkeys.set_pressed_key(rect_id, k)
+                            self.player.convert_abilities()
                     if event.key == pg.K_ESCAPE:
                         self.running = False
 

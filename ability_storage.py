@@ -11,6 +11,7 @@ class AllAbilities:
                           'create_fireball': {'method': self.create_fireball, 'key': pg.K_f, 'sprite': 'sprite/fireball.png'},
                           'create_frostbolt': {'method': self.create_frostbolt, 'key': pg.K_r, 'sprite': 'sprite/frostbolt.png'},
                           'flame_strike': {'method': self.flame_strike, 'key': pg.K_q, 'sprite': 'sprite/flame_strike_attack.png'},
+                          'blizzard': {'method': self.blizzard, 'key': pg.K_t, 'sprite': 'sprite/blizzard_attack.png'},
                           }
 
     def get_abilities(self, abilities):
@@ -35,3 +36,6 @@ class AllAbilities:
 
     def flame_strike(self, attacker):
         FlameStrike([self.visible, self.bullet_group(attacker)], attacker)
+
+    def blizzard(self, attacker):
+        Blizzard([self.visible, self.bullet_group(attacker)], attacker)

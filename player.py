@@ -20,7 +20,8 @@ class Player(Entity):
         self.speed = self.original_speed
 
         self.abilities = abilities
-        self.ability_key_method = self.convert_abilities()
+        self.ability_key_method = None
+        self.convert_abilities()
         self.hp_bar = Bars(50, 8, 'green', self.max_health)
 
         self.obstacles = obstacles
@@ -51,7 +52,7 @@ class Player(Entity):
         abilities_list = list(self.abilities.keys())
         for ability in abilities_list:
             result[self.abilities[ability]['key']] = self.abilities[ability]['method']
-        return result
+        self.ability_key_method = result
 
     def follow_mouse(self):
         polar_vector = pg.math.Vector2(0, -1)
