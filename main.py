@@ -4,7 +4,8 @@ from player import Player
 from enemy import *
 from tiles import *
 from interface import *
-from spells import *
+# from spells import *
+from ability_storage import AllAbilities
 
 
 class Game:
@@ -23,15 +24,19 @@ class Game:
         self.enemies = pg.sprite.Group()
         self.entities = pg.sprite.Group()
 
-        self.abilities = {'create_bullet': {'method': self.create_bullet, 'key': 101, 'sprite': 'sprite/bullet.png'},
-                          'create_fireball': {'method': self.create_fireball, 'key': pg.K_f, 'sprite': 'sprite/fireball.png'},
-                          'create_frostbolt': {'method': self.create_frostbolt, 'key': pg.K_r, 'sprite': 'sprite/frostbolt.png'},
-                          'flame_strike': {'method': self.flame_strike, 'key': pg.K_q, 'sprite': 'sprite/flame_strike_attack.png'},
-                          }
+        sprite_groups_for_abilities = {
+            'visible_sprites': self.visible_sprites,
+            'bullets': self.bullets,
+            'enemy_bullet': self.enemy_bullet,
+            'obstacle_sprites': self.obstacle_sprite,
+        }
+        self.all_abilities = AllAbilities(sprite_groups_for_abilities)
 
-        self.player = Player([self.entities], (50, 50), self.abilities, self.obstacle_sprite)
+        abilities_for_player = ['create_bullet', 'create_fireball', 'create_frostbolt', 'flame_strike']
+        self.player = Player([self.entities], (50, 50), self.all_abilities.get_abilities(abilities_for_player), self.obstacle_sprite)
+        self.hotkeys = HotKeys(self.all_abilities.get_abilities(abilities_for_player))
+
         self.offset = pg.math.Vector2()
-        self.hotkeys = HotKeys(self.abilities)
         self.create_map()
 
     def create_map(self):
@@ -41,9 +46,9 @@ class Game:
                 if tile == 'x':
                     Tile([self.visible_sprites], pos)
                 elif tile == 'e':
-                    Sceleton([self.entities, self.enemies], pos, self.abilities, self.obstacle_sprite)
+                    Sceleton([self.entities, self.enemies], pos, self.all_abilities.get_abilities(['create_bullet']), self.obstacle_sprite)
                 elif tile == 'f':
-                    FireElemental([self.entities, self.enemies], pos, self.abilities, self.obstacle_sprite)
+                    FireElemental([self.entities, self.enemies], pos, self.all_abilities.get_abilities(['create_fireball']), self.obstacle_sprite)
                 elif tile == 'w':
                     ObstacleTile([self.visible_sprites, self.obstacle_sprite], pos)
 
@@ -97,22 +102,6 @@ class Game:
                             self.hotkeys.set_pressed_key(rect_id, k)
                     if event.key == pg.K_ESCAPE:
                         self.running = False
-
-    def bullet_group(self, attacker):
-        bullet_group = self.bullets if attacker.type == 'player' else self.enemy_bullet
-        return bullet_group
-
-    def create_bullet(self, attacker):
-        Bullet([self.visible_sprites, self.bullet_group(attacker)], attacker, self.obstacle_sprite)
-
-    def create_fireball(self, attacker):
-        Fireball([self.visible_sprites, self.bullet_group(attacker)], attacker, self.obstacle_sprite)
-
-    def create_frostbolt(self, attacker):
-        Frostblot([self.visible_sprites, self.bullet_group(attacker)], attacker, self.obstacle_sprite)
-
-    def flame_strike(self, attacker, pos):
-        FlameStrike([self.visible_sprites, self.bullet_group(attacker)], attacker, pos + self.offset)
 
 
 game = Game()

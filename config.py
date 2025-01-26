@@ -24,7 +24,7 @@ MAP = [
     'w x x x x x x x x x x x xww',
     'wx x x    x x x x x x x www',
     'w x x x x x x x x ww x xwww',
-    'wx x x x x x x x x x x x ww',
+    'wx x f x x x x x x x x x ww',
     'w x x x xwww x x x x x x xw',
     'wx x x x x x x x xwwww x ww',
     'w x x x x x x x x x x x xww',

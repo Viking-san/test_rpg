@@ -147,7 +147,8 @@ class FlameStrike(pg.sprite.Sprite):
         self.surf1 = pg.image.load('sprite/flame_strike_cast.png').convert_alpha()
         self.surf2 = pg.image.load('sprite/flame_strike_attack.png').convert_alpha()
         self.image = copy(self.surf1)
-        self.rect = self.image.get_rect(center=pos)
+        self.offset = player.offset
+        self.rect = self.image.get_rect(center=pos + self.offset)
 
         self.is_casting = True
         self.player = player
@@ -157,7 +158,7 @@ class FlameStrike(pg.sprite.Sprite):
         self.display = pg.display.get_surface()
 
         self.distance = 200
-        pos_vector = pg.math.Vector2(pos)
+        pos_vector = pg.math.Vector2(pos + self.offset)
         player_vector = pg.math.Vector2(player.rect.center)
         distance = (player_vector - pos_vector).magnitude()
         if self.distance < distance:
@@ -197,9 +198,9 @@ class FlameStrike(pg.sprite.Sprite):
 
     def update(self, offset):
         self.timer(offset)
+        self.offset = offset
         if self.is_casting:
             if self.player.is_moving or self.player.is_attacked or self.player.is_dead():
                 self.is_casting = False
                 self.player.is_casting = False
                 self.kill()
-            return
