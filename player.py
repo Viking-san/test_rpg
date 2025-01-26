@@ -20,6 +20,7 @@ class Player(Entity):
         self.speed = self.original_speed
 
         self.abilities = abilities
+        self.ability_key_method = self.convert_abilities()
         self.hp_bar = Bars(50, 8, 'green', self.max_health)
 
         self.obstacles = obstacles
@@ -41,14 +42,16 @@ class Player(Entity):
 
         self.moving()
 
-        if keys[self.abilities['create_fireball']['key']]:
-            self.abilities['create_fireball']['method'](self)
-        elif keys[self.abilities['create_frostbolt']['key']]:
-            self.abilities['create_frostbolt']['method'](self)
-        elif keys[self.abilities['create_bullet']['key']]:
-            self.abilities['create_bullet']['method'](self)
-        elif keys[self.abilities['flame_strike']['key']]:
-            self.abilities['flame_strike']['method'](self, pg.math.Vector2(pg.mouse.get_pos()))
+        for key in self.ability_key_method:
+            if keys[key]:
+                self.ability_key_method[key](self)
+
+    def convert_abilities(self):
+        result = {}
+        abilities_list = list(self.abilities.keys())
+        for ability in abilities_list:
+            result[self.abilities[ability]['key']] = self.abilities[ability]['method']
+        return result
 
     def follow_mouse(self):
         polar_vector = pg.math.Vector2(0, -1)

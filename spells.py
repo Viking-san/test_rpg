@@ -141,13 +141,14 @@ class Fireball(ProjectileSpell):
 
 
 class FlameStrike(pg.sprite.Sprite):
-    def __init__(self, groups, player, pos):
+    def __init__(self, groups, player):
         super().__init__(groups)
 
         self.surf1 = pg.image.load('sprite/flame_strike_cast.png').convert_alpha()
         self.surf2 = pg.image.load('sprite/flame_strike_attack.png').convert_alpha()
         self.image = copy(self.surf1)
         self.offset = player.offset
+        pos = pg.mouse.get_pos()
         self.rect = self.image.get_rect(center=pos + self.offset)
 
         self.is_casting = True

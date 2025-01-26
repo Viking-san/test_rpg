@@ -33,5 +33,5 @@ class AllAbilities:
     def create_frostbolt(self, attacker):
         Frostblot([self.visible, self.bullet_group(attacker)], attacker, self.obstacles)
 
-    def flame_strike(self, attacker, pos):
-        FlameStrike([self.visible, self.bullet_group(attacker)], attacker, pos)
+    def flame_strike(self, attacker):
+        FlameStrike([self.visible, self.bullet_group(attacker)], attacker)
