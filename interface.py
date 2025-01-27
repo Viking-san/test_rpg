@@ -129,3 +129,49 @@ class HotKeys:
             pg.draw.rect(display, (100, 100, 100), rect)
             display.blit(image, rect)
             display.blit(self.key_names[index], rect)
+
+
+class Button:
+    def __init__(self, width, height, text, pos):
+        self.display = pg.display.get_surface()
+
+        self.width = width
+        self.height = height
+        self.text = text
+        self.pos = pos
+
+        self.font = pg.font.Font('joystix.ttf', 16)
+        self.rect = pg.Rect(*pos, self.width, self.height)
+        self.color = 'grey'
+        self.pressed_color = 'red'
+
+        self.button_pressed = False
+
+    def draw(self):
+        text = self.font.render(self.text, 0, 'white', 'black')
+        rect = text.get_rect(center=self.rect.center)
+
+        pg.draw.rect(self.display, self.color, self.rect)
+        self.display.blit(text, rect)
+
+    def check_mouse_collision(self):
+        mouse_pos = pg.mouse.get_pos()
+        if self.rect.collidepoint(mouse_pos):
+            return True
+        return False
+
+    def button_pressed_and_released(self):
+        if self.check_mouse_collision() and pg.mouse.get_pressed()[0]:
+            self.button_pressed = True
+
+        if self.button_pressed and not pg.mouse.get_pressed()[0]:
+            self.button_pressed = False
+            return True
+        return False
+
+    def update(self):
+        self.draw()
+        return self.button_pressed_and_released()
+
+
+
