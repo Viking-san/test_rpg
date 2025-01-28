@@ -2,6 +2,7 @@ from entity import Entity
 import pygame as pg
 from copy import copy, deepcopy
 from interface import Bars
+from quest_system import Quest
 
 
 class Player(Entity):
@@ -25,6 +26,17 @@ class Player(Entity):
         self.hp_bar = Bars(50, 8, 'green', self.max_health)
 
         self.obstacles = obstacles
+
+        self.quests = []
+        self.statistics = {'killed': {}, 'collected': {}}
+
+    def add_statistics(self, action, type):
+        if action == 'killed':
+            if type in self.statistics['killed']:
+                self.statistics['killed'][type] += 1
+            else:
+                self.statistics['killed'][type] = 1
+
 
     def input(self):
         keys = pg.key.get_pressed()
@@ -64,9 +76,17 @@ class Player(Entity):
         self.image = pg.transform.rotate(self.original_surf, -self.angle)
         self.rect = self.image.get_rect(center=self.hit_box.center)
 
+    def check_quests(self):
+        for quest in self.quests:
+            if quest.check():
+                print('finished')
+
     def update(self, offset, enemies, enemy_bullets):
         self.offset = offset
         self.input()
         self.follow_mouse()
         self.collide_bullets(enemy_bullets)
         self.my_effects.update(offset)
+        self.check_quests()
+        # print(self.statistics)
+        # print(self.quests)

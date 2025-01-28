@@ -28,17 +28,11 @@ class Sceleton(Entity):
         self.attack_radius = 150
 
         self.obstacles = obstacles
-        # self.group = groups[0]
+
+        self.player = None
 
     def attack(self):
         self.abilities['create_bullet']['method'](self)
-
-    # def collide_entities(self):
-    #     for sprite in self.group:
-    #         if sprite.hit_box == self.hit_box:
-    #             continue
-    #         if sprite.hit_box.colliderect(self.hit_box):
-    #             self.hit_box.center = deepcopy(self.current_pos)
 
     def make_decision(self, distance, player):
         if distance > self.agro_radius or self.pathfinder_control:
@@ -50,19 +44,20 @@ class Sceleton(Entity):
             self.attack()
         else:
             self.moving()
+
     def update(self, offset, player, player_bullets):
         if self.is_dead():
             self.kill()
         self.collide_bullets(player_bullets)
         self.my_effects.update(offset)
 
+        self.player = player
+
         distance = self.get_distance_and_direction(player)
         self.make_decision(distance, player)
 
         if self.pathfinder_control:
             self.pathfinder.update(self, offset)
-
-
 
 
 class FireElemental(Entity):

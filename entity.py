@@ -49,17 +49,6 @@ class Entity(pg.sprite.Sprite):
         self.vector.x = 0
         self.vector.y = 0
 
-        # # collide_entities
-        # self.collide_entities()
-
-    # # collide_entities
-    # def collide_entities(self):
-    #     for sprite in self.group:
-    #         if sprite.hit_box == self.hit_box:
-    #             continue
-    #         if sprite.hit_box.colliderect(self.hit_box):
-    #             self.hit_box.center = deepcopy(self.current_pos)
-
     def is_los(self, player):
         tl_start = self.hit_box.topleft + pg.math.Vector2(3, 3)
         tl_end = player.hit_box.topleft + pg.math.Vector2(3, 3)
@@ -82,7 +71,9 @@ class Entity(pg.sprite.Sprite):
     def is_dead(self):
         is_dead = self.health <= 0
         if is_dead:
+            self.player.add_statistics('killed', self.type)
             print(f'{self.type} is dead')
+            self.kill()
         return is_dead
 
     def get_distance_and_direction(self, player):

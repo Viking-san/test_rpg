@@ -49,6 +49,26 @@ class Dialog:
 
         if self.button_accept.update():
             print('accept')
+            return 1
         if self.button_decline.update():
             print('decline')
+        return 0
+
+    def change_text(self, text):
+        self.text = text
+        self.splited_text = []
+        self.split_text()
+
+
+class Quest:
+    def __init__(self, player):
+        self.player = player
+        self.type = 'sceleton'
+        self.require = 2
+
+    def check(self):
+        if self.player.statistics['killed'].get(self.type, 0) == self.require:
+            return True
+        else:
+            return False
 
