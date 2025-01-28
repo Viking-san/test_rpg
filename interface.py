@@ -140,15 +140,14 @@ class Button:
         self.text = text
         self.pos = pos
 
-        self.font = pg.font.Font('joystix.ttf', 16)
+        self.font = pg.font.Font('joystix.ttf', 12)
         self.rect = pg.Rect(*pos, self.width, self.height)
-        self.color = 'grey'
-        self.pressed_color = 'red'
+        self.color = (50, 50, 50)
 
         self.button_pressed = False
 
     def draw(self):
-        text = self.font.render(self.text, 0, 'white', 'black')
+        text = self.font.render(self.text, 0, 'white')
         rect = text.get_rect(center=self.rect.center)
 
         pg.draw.rect(self.display, self.color, self.rect)

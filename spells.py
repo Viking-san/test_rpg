@@ -86,7 +86,7 @@ class Bullet(ProjectileSpell):
         self.rect = self.image.get_rect(center=self.player.rect.center)
 
         self.type = 'bullet'
-        self.attack = 0
+        self.attack = 1
         self.speed = 9
 
         self.ttl = 1000

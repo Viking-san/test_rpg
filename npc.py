@@ -1,6 +1,6 @@
 import pygame as pg
 from entity import Entity
-from dialog import Dialog
+from quest_system import Dialog
 
 
 class Peasant(Entity):
@@ -12,7 +12,8 @@ class Peasant(Entity):
         self.player = player
         self.offset = self.player.offset
 
-        self.dialog = Dialog('Hello, adventurer!')
+        quest_text = 'Hello, adventurer! \nМы вроде не на кладбище, откуда здесь скелеты? Скелеты!? АААА!! Что будем делать? Убегать? Или я смотрю ты спокоен, убьешь их?'
+        self.dialog = Dialog(quest_text)
         self.start_dialog = False
         self.close_dialog = False
 
@@ -28,10 +29,7 @@ class Peasant(Entity):
         self.interact()
 
         distance = self.get_distance_and_direction(self.player)
-        if self.start_dialog and distance < 100 and not self.close_dialog:
-            if self.dialog.draw():
-                self.close_dialog = True
-                print('bye-bye')
-
+        if self.start_dialog and distance < 100:
+            self.dialog.draw()
         else:
             self.start_dialog = False
