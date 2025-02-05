@@ -53,6 +53,7 @@ class ProjectileSpell(pg.sprite.Sprite):
                 self.is_casting = False
                 self.player.is_casting = False
                 self.damage = self.attack
+                self.player.cooldown.add_ability(self.type)
 
         if current_time >= cast_is_over_time + self.ttl:
             self.kill()
@@ -193,6 +194,7 @@ class AOEOnPoint(pg.sprite.Sprite):
                 self.player.is_casting = False
                 self.damage = self.attack
                 self.image = copy(self.surf2)
+                self.player.cooldown.add_ability(self.type)
 
         if current_time >= cast_is_over_time + self.ttl:
             self.kill()
@@ -260,7 +262,7 @@ class Blizzard(AOEOnPoint):
         self.attack = 2
         self.damage = 0
         self.ttl = 400
-        self.type = 'flame_strike'
+        self.type = 'blizzard'
         self.effects = ['slow']
 
         self.cast_bar.set_max_value(self.cast_time)

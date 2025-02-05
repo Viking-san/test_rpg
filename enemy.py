@@ -29,10 +29,12 @@ class Sceleton(Entity):
 
         self.obstacles = obstacles
 
-        self.player = None
+        self.activate_cooldown()
 
     def attack(self):
-        self.abilities['create_bullet']['method'](self)
+        remain = self.cooldown.cant_use.get('fireball', {'time_remain': 0})['time_remain']
+        if remain <= 0:
+            self.abilities['bullet']['method'](self)
 
     def make_decision(self, distance, player):
         if distance > self.agro_radius or self.pathfinder_control:
@@ -59,6 +61,8 @@ class Sceleton(Entity):
         if self.pathfinder_control:
             self.pathfinder.update(self, offset)
 
+        self.cooldown.update()
+
 
 class FireElemental(Entity):
     def __init__(self, groups, pos, abilities, obstacles):
@@ -83,8 +87,12 @@ class FireElemental(Entity):
 
         self.obstacles = obstacles
 
+        self.activate_cooldown()
+
     def attack(self):
-        self.abilities['create_fireball']['method'](self)
+        remain = self.cooldown.cant_use.get('fireball', {'time_remain': 0})['time_remain']
+        if remain <= 0:
+            self.abilities['fireball']['method'](self)
 
     def make_decision(self, distance, player):
         if distance > self.agro_radius or self.pathfinder_control:
@@ -109,3 +117,7 @@ class FireElemental(Entity):
 
         if self.pathfinder_control:
             self.pathfinder.update(self, offset)
+
+        self.player = player
+        print(self.cooldown.cant_use)
+        self.cooldown.update()

@@ -1,10 +1,10 @@
-import pygame as pg
-from config import *
+# import pygame as pg
+# from config import *
+# from spells import *
 from player import Player
 from enemy import *
 from tiles import *
 from interface import *
-# from spells import *
 from ability_storage import AllAbilities
 from npc import Peasant
 
@@ -33,9 +33,9 @@ class Game:
         }
         self.all_abilities = AllAbilities(sprite_groups_for_abilities)
 
-        abilities_for_player = ['create_bullet', 'create_fireball', 'create_frostbolt', 'flame_strike', 'blizzard']
+        abilities_for_player = ['bullet', 'fireball', 'frostbolt', 'flame_strike', 'blizzard']
         abilities_for_player = self.all_abilities.get_abilities(abilities_for_player)
-        self.player = Player([], (50, 50), abilities_for_player, self.obstacle_sprite)
+        self.player = Player((), (50, 50), abilities_for_player, self.obstacle_sprite)
         self.hotkeys = HotKeys(abilities_for_player)
 
         self.offset = pg.math.Vector2()
@@ -46,15 +46,21 @@ class Game:
             for x, tile in enumerate(map_string):
                 pos = (x * TILE_SIZE, y * TILE_SIZE)
                 if tile == 'x':
-                    Tile([self.visible_sprites], pos)
+                    Tile((self.visible_sprites,), pos)
                 elif tile == 'e':
-                    Sceleton([ self.enemies], pos, self.all_abilities.get_abilities(['create_bullet']), self.obstacle_sprite)
+                    Sceleton((self.enemies,),
+                             pos,
+                             self.all_abilities.get_abilities(['bullet']),
+                             self.obstacle_sprite)
                 elif tile == 'f':
-                    FireElemental([self.enemies], pos, self.all_abilities.get_abilities(['create_fireball']), self.obstacle_sprite)
+                    FireElemental((self.enemies,),
+                                  pos,
+                                  self.all_abilities.get_abilities(['fireball']),
+                                  self.obstacle_sprite)
                 elif tile == 'w':
-                    ObstacleTile([self.visible_sprites, self.obstacle_sprite], pos)
+                    ObstacleTile((self.visible_sprites, self.obstacle_sprite), pos)
                 elif tile == 'k':
-                    Peasant([self.npc], pos, self.player)
+                    Peasant((self.npc,), pos, self.player)
 
     def camera(self):
         self.offset.x = self.player.rect.centerx - WIDTH // 2

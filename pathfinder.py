@@ -1,6 +1,6 @@
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
-from pathfinding.core.diagonal_movement import DiagonalMovement
+# from pathfinding.core.diagonal_movement import DiagonalMovement
 from config import *
 import pygame as pg
 
@@ -82,7 +82,3 @@ class Pathfinder:
             self.dot_chaser(seeker)
         else:
             seeker.pathfinder_control = False
-
-
-
-

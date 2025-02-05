@@ -38,5 +38,7 @@ class Peasant(Entity):
             pushed_button = self.dialog.draw()
             if pushed_button == 1:
                 self.player.quests.append(self.my_quest)
+            elif pushed_button == -1:
+                self.start_dialog = False
         else:
             self.start_dialog = False

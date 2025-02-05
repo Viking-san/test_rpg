@@ -9,7 +9,7 @@ class Dialog:
         self.text = text
         self.splited_text = []
         self.font = pg.font.Font('joystix.ttf', 12)
-        self.button_decline = Button(95, 20, 'decline', (165, 350))
+        self.button_exit = Button(95, 20, 'exit', (165, 350))
         self.button_accept = Button(95, 20, 'accept', (10, 350))
 
         self.bg_rect = pg.Rect(10, 50, 250, 300)
@@ -50,8 +50,9 @@ class Dialog:
         if self.button_accept.update():
             print('accept')
             return 1
-        if self.button_decline.update():
-            print('decline')
+        if self.button_exit.update():
+            print('exit')
+            return -1
         return 0
 
     def change_text(self, text):

@@ -3,6 +3,7 @@ import pygame as pg
 from copy import copy, deepcopy
 from interface import Bars
 from quest_system import Quest
+from ability_storage import Cooldown
 
 
 class Player(Entity):
@@ -30,13 +31,14 @@ class Player(Entity):
         self.quests = []
         self.statistics = {'killed': {}, 'collected': {}}
 
+        self.activate_cooldown()
+
     def add_statistics(self, action, type):
         if action == 'killed':
             if type in self.statistics['killed']:
                 self.statistics['killed'][type] += 1
             else:
                 self.statistics['killed'][type] = 1
-
 
     def input(self):
         keys = pg.key.get_pressed()
@@ -56,14 +58,15 @@ class Player(Entity):
         self.moving()
 
         for key in self.ability_key_method:
-            if keys[key]:
-                self.ability_key_method[key](self)
+            remain = self.cooldown.cant_use.get(self.ability_key_method[key][1], {'time_remain': 0})['time_remain']
+            if keys[key] and remain <= 0:
+                self.ability_key_method[key][0](self)
 
     def convert_abilities(self):
         result = {}
         abilities_list = list(self.abilities.keys())
         for ability in abilities_list:
-            result[self.abilities[ability]['key']] = self.abilities[ability]['method']
+            result[self.abilities[ability]['key']] = [self.abilities[ability]['method'], ability]
         self.ability_key_method = result
 
     def follow_mouse(self):
@@ -88,5 +91,6 @@ class Player(Entity):
         self.collide_bullets(enemy_bullets)
         self.my_effects.update(offset)
         self.check_quests()
-        # print(self.statistics)
-        # print(self.quests)
+        self.cooldown.update()
+        print(self.cooldown.cant_use)
+

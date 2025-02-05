@@ -1,10 +1,10 @@
 import pygame as pg
 from config import *
 from interface import *
-# from spells import *
 from effects import MyEffects
 from copy import copy
 from pathfinder import Pathfinder
+from ability_storage import Cooldown
 
 
 class Entity(pg.sprite.Sprite):
@@ -30,8 +30,10 @@ class Entity(pg.sprite.Sprite):
         self.pathfinder = Pathfinder()
         self.pathfinder_control = False
 
-        # # collide_entities
-        # self.group = groups[0]
+        self.player = None
+
+    def activate_cooldown(self):
+        self.cooldown = Cooldown(self.abilities)
 
     def moving(self):
         self.is_moving = False
