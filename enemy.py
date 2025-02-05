@@ -24,7 +24,7 @@ class Sceleton(Entity):
         self.abilities = abilities
         self.hp_bar = Bars(50, 8, 'green', self.max_health)
 
-        self.agro_radius = 300
+        self.agro_radius = 200
         self.attack_radius = 150
 
         self.obstacles = obstacles
@@ -35,6 +35,7 @@ class Sceleton(Entity):
         remain = self.cooldown.cant_use.get('fireball', {'time_remain': 0})['time_remain']
         if remain <= 0:
             self.abilities['bullet']['method'](self)
+
 
     def make_decision(self, distance, player):
         if distance > self.agro_radius or self.pathfinder_control:
@@ -82,28 +83,28 @@ class FireElemental(Entity):
         self.abilities = abilities
         self.hp_bar = Bars(50, 8, 'green', self.max_health)
 
-        self.agro_radius = 400
+        self.agro_radius = 350
         self.attack_radius = 250
 
         self.obstacles = obstacles
 
         self.activate_cooldown()
 
-    def attack(self):
-        remain = self.cooldown.cant_use.get('fireball', {'time_remain': 0})['time_remain']
-        if remain <= 0:
-            self.abilities['fireball']['method'](self)
+    def attack_fireball(self):
+        self.abilities['fireball']['method'](self)
 
     def make_decision(self, distance, player):
         if distance > self.agro_radius or self.pathfinder_control:
             return
 
+        fireball_cd = self.cooldown.cant_use.get('fireball', {'time_remain': 0})['time_remain'] > 0
         if not self.is_los(player):
             self.pathfinder.go_find(self, player)
-        elif distance <= self.attack_radius:
-            self.attack()
+        elif distance <= self.attack_radius and not fireball_cd:
+            self.attack_fireball()
         else:
             self.moving()
+            self.abilities['bullet']['method'](self)
 
     def update(self, offset, player, player_bullets):
         self.is_moving = False

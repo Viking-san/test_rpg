@@ -229,12 +229,12 @@ class FlameStrike(AOEOnPoint):
         self.distance = 150
         self.check_distance()
 
-        self.cast_time = 400
+        self.cast_time = 300
         self.cast_time_start = pg.time.get_ticks()
         self.current_cast_time = 0
-        self.attack = 1
+        self.attack = 3
         self.damage = 0
-        self.ttl = 2000
+        self.ttl = 3000
         self.type = 'flame_strike'
         self.effects = ['slow']
 
@@ -259,9 +259,9 @@ class Blizzard(AOEOnPoint):
         self.cast_time = 200
         self.cast_time_start = pg.time.get_ticks()
         self.current_cast_time = 0
-        self.attack = 2
+        self.attack = 4
         self.damage = 0
-        self.ttl = 400
+        self.ttl = 5000
         self.type = 'blizzard'
         self.effects = ['slow']
 

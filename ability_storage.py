@@ -8,10 +8,10 @@ class AllAbilities:
         self.visible = self.sprite_groups['visible_sprites']
 
         self.abilities = {'bullet': {'method': self.create_bullet, 'key': 101, 'sprite': 'sprite/bullet.png', 'cd': 0},
-                          'fireball': {'method': self.create_fireball, 'key': pg.K_f, 'sprite': 'sprite/fireball.png', 'cd': 3000},
+                          'fireball': {'method': self.create_fireball, 'key': pg.K_f, 'sprite': 'sprite/fireball.png', 'cd': 2000},
                           'frostbolt': {'method': self.create_frostbolt, 'key': pg.K_r, 'sprite': 'sprite/frostbolt.png', 'cd': 1000},
-                          'flame_strike': {'method': self.flame_strike, 'key': pg.K_q, 'sprite': 'sprite/flame_strike_attack.png', 'cd': 10000},
-                          'blizzard': {'method': self.blizzard, 'key': pg.K_t, 'sprite': 'sprite/blizzard_attack.png', 'cd': 10000},
+                          'flame_strike': {'method': self.flame_strike, 'key': pg.K_q, 'sprite': 'sprite/flame_strike_attack.png', 'cd': 3000},
+                          'blizzard': {'method': self.blizzard, 'key': pg.K_t, 'sprite': 'sprite/blizzard_attack.png', 'cd': 5000},
                           }
 
     def get_abilities(self, abilities):

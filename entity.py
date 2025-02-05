@@ -105,7 +105,7 @@ class Entity(pg.sprite.Sprite):
                 print(int(self.health))
                 self.my_effects.add_effect(sprite.effects)
 
-                if sprite.type not in ['flame_strike']:
+                if sprite.type not in ['flame_strike', 'blizzard']:
                     sprite.kill()
 
     def collide_obstacles(self, direction):
