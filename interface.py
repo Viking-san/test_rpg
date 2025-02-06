@@ -119,16 +119,28 @@ class HotKeys:
             if current_time > self.change_locker_state_time + self.change_locker_state_timer_start:
                 self.can_change_locker_state = True
 
-    def update(self, display):
+    def display_cooldown(self, pos, cooldown, display):
+        if cooldown >= 1000:
+            cooldown = str(cooldown // 1000)
+        else:
+            cooldown = str((cooldown // 100) / 10)[1:]
+        text = self.font.render(str(cooldown), 0, 'white', 'black')
+        rect = text.get_rect(midbottom=pos)
+        display.blit(text, rect)
+
+    def update(self, display, cooldown):
         self.check_hotkeys_bar_collide_mouse()
         self.draw_locker(display)
         self.timers()
 
-        for index, image in enumerate(self.images):
+        for index, ability in enumerate(self.abilities):
             rect = self.rects[index]
             pg.draw.rect(display, (100, 100, 100), rect)
-            display.blit(image, rect)
+            display.blit(self.images[index], rect)
             display.blit(self.key_names[index], rect)
+            cd = cooldown.get(ability, {"time_remain": 0})["time_remain"]
+            if cd:
+                self.display_cooldown(rect.midbottom, cd, display)
 
 
 class Button:

@@ -95,7 +95,7 @@ class Game:
         self.display.fill('white')
 
         self.camera()
-        self.hotkeys.update(self.display)
+        self.hotkeys.update(self.display, self.player.cooldown.cant_use)
 
         if self.player.is_dead():
             self.running = False
