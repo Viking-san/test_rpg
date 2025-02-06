@@ -124,7 +124,7 @@ class HotKeys:
             cooldown = str(cooldown // 1000)
         else:
             cooldown = str((cooldown // 100) / 10)[1:]
-        text = self.font.render(str(cooldown), 0, 'white', 'black')
+        text = self.font.render(cooldown, 0, 'white', 'black')
         rect = text.get_rect(midbottom=pos)
         display.blit(text, rect)
 
@@ -138,9 +138,9 @@ class HotKeys:
             pg.draw.rect(display, (100, 100, 100), rect)
             display.blit(self.images[index], rect)
             display.blit(self.key_names[index], rect)
-            cd = cooldown.get(ability, {"time_remain": 0})["time_remain"]
-            if cd:
-                self.display_cooldown(rect.midbottom, cd, display)
+            time_remain = cooldown.get(ability, {"time_remain": 0})["time_remain"]
+            if time_remain:
+                self.display_cooldown(rect.midbottom, time_remain, display)
 
 
 class Button:

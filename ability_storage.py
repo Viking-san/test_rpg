@@ -7,12 +7,33 @@ class AllAbilities:
         self.obstacles = self.sprite_groups['obstacle_sprites']
         self.visible = self.sprite_groups['visible_sprites']
 
-        self.abilities = {'bullet': {'method': self.create_bullet, 'key': 101, 'sprite': 'sprite/bullet.png', 'cd': 50},
-                          'fireball': {'method': self.create_fireball, 'key': pg.K_f, 'sprite': 'sprite/fireball.png', 'cd': 2000},
-                          'frostbolt': {'method': self.create_frostbolt, 'key': pg.K_r, 'sprite': 'sprite/frostbolt.png', 'cd': 1000},
-                          'flame_strike': {'method': self.flame_strike, 'key': pg.K_q, 'sprite': 'sprite/flame_strike_attack.png', 'cd': 3000},
-                          'blizzard': {'method': self.blizzard, 'key': pg.K_t, 'sprite': 'sprite/blizzard_attack.png', 'cd': 5000},
-                          }
+        self.abilities = {
+                'bullet': {
+                        'method': self.create_bullet,
+                        'key': 101,
+                        'sprite': 'sprite/bullet.png',
+                        'cd': 0},
+                'fireball': {
+                        'method': self.create_fireball,
+                        'key': pg.K_f,
+                        'sprite': 'sprite/fireball.png',
+                        'cd': 2000},
+                'frostbolt': {
+                        'method': self.create_frostbolt,
+                        'key': pg.K_r,
+                        'sprite': 'sprite/frostbolt.png',
+                        'cd': 1000},
+                'flame_strike': {
+                        'method': self.flame_strike,
+                        'key': pg.K_q,
+                        'sprite': 'sprite/flame_strike_attack.png',
+                        'cd': 3000},
+                'blizzard': {
+                        'method': self.blizzard,
+                        'key': pg.K_t,
+                        'sprite': 'sprite/blizzard_attack.png',
+                        'cd': 5000},
+              }
 
     def get_abilities(self, abilities):
         result = {}
@@ -61,7 +82,8 @@ class Cooldown:
     def timers(self):
         current_time = pg.time.get_ticks()
         for ability in self.cant_use:
-            self.cant_use[ability]['time_remain'] = max(self.abilities[ability]['cd'] + self.cant_use[ability]['cast_time'] - current_time, 0)
+            time_remain = max(self.abilities[ability]['cd'] + self.cant_use[ability]['cast_time'] - current_time, 0)
+            self.cant_use[ability]['time_remain'] = time_remain
 
     def update(self):
         self.timers()
