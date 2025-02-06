@@ -15,6 +15,7 @@ class Player(Entity):
         self.image = copy(self.original_surf)
         self.rect = self.image.get_rect(topleft=pos)
         self.hit_box = self.rect.inflate(-6, -6)
+        self.obstacles = obstacles
 
         self.health = 1050
         self.max_health = 1500
@@ -26,19 +27,9 @@ class Player(Entity):
         self.convert_abilities()
         self.hp_bar = Bars(50, 8, 'green', self.max_health)
 
-        self.obstacles = obstacles
-
         self.quests = []
-        self.statistics = {'killed': {}, 'collected': {}}
 
         self.activate_cooldown()
-
-    def add_statistics(self, action, type):
-        if action == 'killed':
-            if type in self.statistics['killed']:
-                self.statistics['killed'][type] += 1
-            else:
-                self.statistics['killed'][type] = 1
 
     def input(self):
         keys = pg.key.get_pressed()
@@ -58,15 +49,14 @@ class Player(Entity):
         self.moving()
 
         for key in self.ability_key_method:
-            remain = self.cooldown.cant_use.get(self.ability_key_method[key][1], {'time_remain': 0})['time_remain']
-            if keys[key] and remain <= 0:
-                self.ability_key_method[key][0](self)
+            if keys[key] and self.ability_is_ready(self.ability_key_method[key]['name']):
+                self.ability_key_method[key]['method'](self)
 
     def convert_abilities(self):
         result = {}
         abilities_list = list(self.abilities.keys())
         for ability in abilities_list:
-            result[self.abilities[ability]['key']] = [self.abilities[ability]['method'], ability]
+            result[self.abilities[ability]['key']] = {'method': self.abilities[ability]['method'], 'name': ability}
         self.ability_key_method = result
 
     def follow_mouse(self):
@@ -85,12 +75,7 @@ class Player(Entity):
                 print('finished')
 
     def update(self, offset, enemies, enemy_bullets):
-        self.offset = offset
-        self.input()
         self.follow_mouse()
-        self.collide_bullets(enemy_bullets)
-        self.my_effects.update(offset)
+        self.all_entities_updater(offset, enemy_bullets)
+        self.input()
         self.check_quests()
-        self.cooldown.update()
-        print(self.cooldown.cant_use)
-

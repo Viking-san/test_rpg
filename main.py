@@ -55,7 +55,7 @@ class Game:
                 elif tile == 'f':
                     FireElemental((self.enemies,),
                                   pos,
-                                  self.all_abilities.get_abilities(['fireball', 'bullet']),
+                                  self.all_abilities.get_abilities(['fireball', 'bullet', 'frostbolt']),
                                   self.obstacle_sprite)
                 elif tile == 'w':
                     ObstacleTile((self.visible_sprites, self.obstacle_sprite), pos)

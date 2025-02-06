@@ -19,24 +19,22 @@ class Entity(pg.sprite.Sprite):
         self.speed = 1
         self.vector = pg.math.Vector2()
         self.offset = pg.math.Vector2()
-        # self.position = None
 
         self.is_casting = False
         self.is_moving = False
         self.is_attacked = False
 
         self.my_effects = MyEffects(self)
-
+        self.cooldown = None
         self.pathfinder = Pathfinder()
         self.pathfinder_control = False
-
         self.player = None
+        self.statistics = {'killed': {}, 'collected': {}}
 
     def activate_cooldown(self):
         self.cooldown = Cooldown(self.abilities)
 
     def moving(self):
-        self.is_moving = False
         self.current_pos = deepcopy(self.hit_box.center)
 
         self.hit_box.x += self.vector.x * self.speed
@@ -70,10 +68,18 @@ class Entity(pg.sprite.Sprite):
                 return False
         return True
 
+    def add_statistics(self, action, type):
+        if action == 'killed':
+            if type in self.statistics['killed']:
+                self.statistics['killed'][type] += 1
+            else:
+                self.statistics['killed'][type] = 1
+
     def is_dead(self):
         is_dead = self.health <= 0
         if is_dead:
-            self.player.add_statistics('killed', self.type)
+            if self.type != 'player':
+                self.player.add_statistics('killed', self.type)
             print(f'{self.type} is dead')
             self.kill()
         return is_dead
@@ -105,7 +111,7 @@ class Entity(pg.sprite.Sprite):
                 print(int(self.health))
                 self.my_effects.add_effect(sprite.effects)
 
-                if sprite.type not in ['flame_strike', 'blizzard']:
+                if sprite.die_by_collide_enemy:
                     sprite.kill()
 
     def collide_obstacles(self, direction):
@@ -126,3 +132,30 @@ class Entity(pg.sprite.Sprite):
                         self.hit_box.top = sprite.rect.bottom
 
         self.rect.center = deepcopy(self.hit_box.center)
+
+    def ability_is_ready(self, ability):
+        return self.cooldown.cant_use.get(ability, {'time_remain': 0})['time_remain'] <= 0
+
+    def attack(self, ability):
+        if self.ability_is_ready(ability):
+            self.abilities[ability]['method'](self)
+
+    def all_entities_updater(self, offset, bullets):
+        self.is_moving = False
+        self.cooldown.update()
+        self.my_effects.update(offset)
+        self.collide_bullets(bullets)
+        self.offset = offset
+
+    def identical_enemies_updater(self, offset, player, player_bullets):
+        self.all_entities_updater(offset, player_bullets)
+
+        if self.is_dead():
+            self.kill()
+
+        self.player = player
+        distance = self.get_distance_and_direction(player)
+        self.make_decision(distance, player)
+
+        if self.pathfinder_control:
+            self.pathfinder.update(self, offset)

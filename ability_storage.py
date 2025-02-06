@@ -7,7 +7,7 @@ class AllAbilities:
         self.obstacles = self.sprite_groups['obstacle_sprites']
         self.visible = self.sprite_groups['visible_sprites']
 
-        self.abilities = {'bullet': {'method': self.create_bullet, 'key': 101, 'sprite': 'sprite/bullet.png', 'cd': 0},
+        self.abilities = {'bullet': {'method': self.create_bullet, 'key': 101, 'sprite': 'sprite/bullet.png', 'cd': 50},
                           'fireball': {'method': self.create_fireball, 'key': pg.K_f, 'sprite': 'sprite/fireball.png', 'cd': 2000},
                           'frostbolt': {'method': self.create_frostbolt, 'key': pg.K_r, 'sprite': 'sprite/frostbolt.png', 'cd': 1000},
                           'flame_strike': {'method': self.flame_strike, 'key': pg.K_q, 'sprite': 'sprite/flame_strike_attack.png', 'cd': 3000},

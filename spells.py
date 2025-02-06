@@ -29,6 +29,7 @@ class ProjectileSpell(pg.sprite.Sprite):
         self.current_cast_time = 0
 
         self.obstacles = obstacles
+        self.die_by_collide_enemy = True
 
     def collide_obstacles(self):
         for sprite in self.obstacles:
@@ -173,6 +174,7 @@ class AOEOnPoint(pg.sprite.Sprite):
         self.effects = []
 
         self.cast_bar = Bars(50, 8, 'red', self.cast_time)
+        self.die_by_collide_enemy = False
 
     def check_distance(self):
         pos_vector = pg.math.Vector2(self.pos + self.offset)
@@ -232,7 +234,7 @@ class FlameStrike(AOEOnPoint):
         self.cast_time = 300
         self.cast_time_start = pg.time.get_ticks()
         self.current_cast_time = 0
-        self.attack = 3
+        self.attack = 2
         self.damage = 0
         self.ttl = 3000
         self.type = 'flame_strike'
@@ -259,7 +261,7 @@ class Blizzard(AOEOnPoint):
         self.cast_time = 200
         self.cast_time_start = pg.time.get_ticks()
         self.current_cast_time = 0
-        self.attack = 4
+        self.attack = 2
         self.damage = 0
         self.ttl = 5000
         self.type = 'blizzard'

@@ -15,27 +15,19 @@ class Sceleton(Entity):
         self.rect = self.image.get_rect(topleft=(pos))
         self.hit_box = self.rect.inflate(-6, -6)
         self.current_pos = deepcopy(self.hit_box.center)
+        self.obstacles = obstacles
 
         self.health = 900
         self.max_health = 900
         self.original_speed = 3
+        self.agro_radius = 300
+        self.attack_radius = 150
         self.speed = self.original_speed
 
         self.abilities = abilities
         self.hp_bar = Bars(50, 8, 'green', self.max_health)
 
-        self.agro_radius = 200
-        self.attack_radius = 150
-
-        self.obstacles = obstacles
-
         self.activate_cooldown()
-
-    def attack(self):
-        remain = self.cooldown.cant_use.get('fireball', {'time_remain': 0})['time_remain']
-        if remain <= 0:
-            self.abilities['bullet']['method'](self)
-
 
     def make_decision(self, distance, player):
         if distance > self.agro_radius or self.pathfinder_control:
@@ -44,25 +36,12 @@ class Sceleton(Entity):
         if not self.is_los(player):
             self.pathfinder.go_find(self, player)
         elif distance <= self.attack_radius:
-            self.attack()
+            self.attack('bullet')
         else:
             self.moving()
 
     def update(self, offset, player, player_bullets):
-        if self.is_dead():
-            self.kill()
-        self.collide_bullets(player_bullets)
-        self.my_effects.update(offset)
-
-        self.player = player
-
-        distance = self.get_distance_and_direction(player)
-        self.make_decision(distance, player)
-
-        if self.pathfinder_control:
-            self.pathfinder.update(self, offset)
-
-        self.cooldown.update()
+        self.identical_enemies_updater(offset, player, player_bullets)
 
 
 class FireElemental(Entity):
@@ -70,55 +49,35 @@ class FireElemental(Entity):
         super().__init__(groups)
 
         self.type = 'fire elemental'
-        self.original_surf = pg.image.load('sprite/fireelemental.png')
+        self.original_surf = pg.image.load('sprite/fireelemental.png').convert_alpha()
         self.image = copy(self.original_surf)
         self.rect = self.image.get_rect(topleft=(pos))
         self.hit_box = self.rect.inflate(-6, -6)
+        self.obstacles = obstacles
 
         self.health = 1900
         self.max_health = 1900
         self.original_speed = 3
+        self.agro_radius = 400
+        self.attack_radius = 250
         self.speed = self.original_speed
 
         self.abilities = abilities
         self.hp_bar = Bars(50, 8, 'green', self.max_health)
 
-        self.agro_radius = 350
-        self.attack_radius = 250
-
-        self.obstacles = obstacles
-
         self.activate_cooldown()
-
-    def attack_fireball(self):
-        self.abilities['fireball']['method'](self)
 
     def make_decision(self, distance, player):
         if distance > self.agro_radius or self.pathfinder_control:
             return
 
-        fireball_cd = self.cooldown.cant_use.get('fireball', {'time_remain': 0})['time_remain'] > 0
         if not self.is_los(player):
             self.pathfinder.go_find(self, player)
-        elif distance <= self.attack_radius and not fireball_cd:
-            self.attack_fireball()
+        elif distance <= self.attack_radius and self.ability_is_ready('fireball'):
+            self.abilities['fireball']['method'](self)
         else:
             self.moving()
-            self.abilities['bullet']['method'](self)
+            self.attack('bullet')
 
     def update(self, offset, player, player_bullets):
-        self.is_moving = False
-        if self.is_dead():
-            self.kill()
-        self.collide_bullets(player_bullets)
-        self.my_effects.update(offset)
-
-        distance = self.get_distance_and_direction(player)
-        self.make_decision(distance, player)
-
-        if self.pathfinder_control:
-            self.pathfinder.update(self, offset)
-
-        self.player = player
-        print(self.cooldown.cant_use)
-        self.cooldown.update()
+        self.identical_enemies_updater(offset, player, player_bullets)
