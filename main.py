@@ -17,6 +17,7 @@ class Game:
         self.display = pg.display.set_mode((WIDTH, HEIGHT))
         self.clock = pg.time.Clock()
         self.running = True
+        self.pause = False
 
         self.visible_sprites = pg.sprite.Group()
         self.obstacle_sprite = pg.sprite.Group()
@@ -41,6 +42,12 @@ class Game:
         self.offset = pg.math.Vector2()
         self.create_map()
 
+        self.pause_font = pg.font.Font('joystix.ttf', 32)
+        self.pause_text = self.pause_font.render('Pause', 0, 'white')
+        self.pause_rect = self.pause_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+        self.pause_surf = pg.Surface(self.pause_rect.size)
+        self.pause_button = Button(self.pause_rect.width, 50, 'exit', self.pause_rect.bottomleft)
+
     def create_map(self):
         for y, map_string in enumerate(MAP):
             for x, tile in enumerate(map_string):
@@ -63,6 +70,8 @@ class Game:
                     Peasant((self.npc,), pos, self.player)
 
     def camera(self):
+        self.display.fill('white')
+
         self.offset.x = self.player.rect.centerx - WIDTH // 2
         self.offset.y = self.player.rect.centery - HEIGHT // 2
 
@@ -79,26 +88,31 @@ class Game:
             offset = sprite.rect.topleft - self.offset
             self.display.blit(sprite.image, offset)
 
-        self.enemies.update(self.offset, self.player, self.bullets)
-
         offset = self.player.rect.topleft - self.offset
         self.display.blit(self.player.image, offset)
         self.player.hp_bar.draw(self.display, self.player.health, self.player.rect.center - self.offset + (-25, 25))
-        self.player.update(self.offset, self.enemies, self.enemy_bullet)
 
-        self.bullets.update(self.offset)
-        self.enemy_bullet.update(self.offset)
+        if not self.pause:
+            self.player.update(self.offset, self.enemies, self.enemy_bullet)
+            self.enemies.update(self.offset, self.player, self.bullets)
+            self.npc.update(self.offset)
+            self.bullets.update(self.offset)
+            self.enemy_bullet.update(self.offset)
 
-        self.npc.update(self.offset)
+    def pause_menu(self):
+        self.display.blit(self.pause_surf, self.pause_rect)
+        self.display.blit(self.pause_text, self.pause_rect)
+        if self.pause_button.update():
+            self.running = False
 
     def draw(self):
-        self.display.fill('white')
-
         self.camera()
         self.hotkeys.update(self.display, self.player.cooldown.cant_use)
+        if self.pause:
+            self.pause_menu()
 
         if self.player.is_dead():
-            self.running = False
+            self.pause = True
 
         pg.display.update()
 
@@ -118,7 +132,7 @@ class Game:
                             self.hotkeys.set_pressed_key(rect_id, k)
                             self.player.convert_abilities()
                     if event.key == pg.K_ESCAPE:
-                        self.running = False
+                        self.pause = not self.pause
 
 
 game = Game()

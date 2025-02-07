@@ -78,4 +78,4 @@ class Player(Entity):
         self.follow_mouse()
         self.all_entities_updater(offset, enemy_bullets)
         self.input()
-        self.check_quests()
+        # self.check_quests()
