@@ -268,3 +268,41 @@ class Blizzard(AOEOnPoint):
         self.effects = ['slow']
 
         self.cast_bar.set_max_value(self.cast_time)
+
+
+class Blink:
+    def __init__(self, player, obstacle):
+        self.player = player
+
+        if self.player.is_casting:
+            return
+
+        self.obstacles = obstacle
+        self.type = 'blink'
+        self.pos = pg.mouse.get_pos() + self.player.offset
+
+        distance = self.player.get_distance_and_direction(self.pos)
+        self.possible_places = [distance // 4 * i for i in range(4)]
+
+        self.reposition()
+
+    def check_los(self):
+        rect = pg.Rect((self.pos[0] - 13, self.pos[1] - 13, 26, 26))
+        return self.player.is_los(rect)
+
+    def find_new_pos(self):
+        while not self.check_los():
+            new_pos_x = self.player.hit_box.centerx + self.player.vector.x * self.possible_places[-1]
+            new_pos_y = self.player.hit_box.centery + self.player.vector.y * self.possible_places[-1]
+            self.pos = [int(new_pos_x), int(new_pos_y)]
+            self.possible_places.pop()
+
+        self.player.hit_box.center = self.pos
+        self.player.vector.x = 0
+        self.player.vector.y = 0
+
+    def reposition(self):
+        self.find_new_pos()
+        self.player.cooldown.add_ability(self.type)
+
+

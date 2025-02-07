@@ -49,15 +49,15 @@ class Entity(pg.sprite.Sprite):
         self.vector.x = 0
         self.vector.y = 0
 
-    def is_los(self, player):
+    def is_los(self, rect):
         tl_start = self.hit_box.topleft + pg.math.Vector2(3, 3)
-        tl_end = player.hit_box.topleft + pg.math.Vector2(3, 3)
+        tl_end = rect.topleft + pg.math.Vector2(3, 3)
         tr_start = self.hit_box.topright + pg.math.Vector2(-3, 3)
-        tr_end = player.hit_box.topright + pg.math.Vector2(-3, 3)
+        tr_end = rect.topright + pg.math.Vector2(-3, 3)
         bl_start = self.hit_box.bottomleft + pg.math.Vector2(3, -3)
-        bl_end = player.hit_box.bottomleft + pg.math.Vector2(3, -3)
+        bl_end = rect.bottomleft + pg.math.Vector2(3, -3)
         br_start = self.hit_box.bottomright + pg.math.Vector2(-3, -3)
-        br_end = player.hit_box.bottomright + pg.math.Vector2(-3, -3)
+        br_end = rect.bottomright + pg.math.Vector2(-3, -3)
 
         for obstacle in self.obstacles:
             check = any([obstacle.rect.clipline(tl_start, tl_end),
@@ -84,10 +84,10 @@ class Entity(pg.sprite.Sprite):
             self.kill()
         return is_dead
 
-    def get_distance_and_direction(self, player):
+    def get_distance_and_direction(self, pos):
         polar_vector = pg.math.Vector2(0, -1)
         enemy_vector = pg.math.Vector2(self.rect.center)
-        player_vector = pg.math.Vector2(player.rect.center)
+        player_vector = pg.math.Vector2(pos)
 
         direction = (player_vector - enemy_vector)
         distance = direction.magnitude()
@@ -154,7 +154,7 @@ class Entity(pg.sprite.Sprite):
             self.kill()
 
         self.player = player
-        distance = self.get_distance_and_direction(player)
+        distance = self.get_distance_and_direction(player.rect.center)
         self.make_decision(distance, player)
 
         if self.pathfinder_control:

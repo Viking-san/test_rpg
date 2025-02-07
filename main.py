@@ -33,7 +33,7 @@ class Game:
         }
         self.all_abilities = AllAbilities(sprite_groups_for_abilities)
 
-        abilities_for_player = ['bullet', 'fireball', 'frostbolt', 'flame_strike', 'blizzard']
+        abilities_for_player = ['bullet', 'fireball', 'frostbolt', 'flame_strike', 'blizzard', 'blink']
         abilities_for_player = self.all_abilities.get_abilities(abilities_for_player)
         self.player = Player((), (50, 50), abilities_for_player, self.obstacle_sprite)
         self.hotkeys = HotKeys(abilities_for_player)

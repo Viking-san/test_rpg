@@ -31,7 +31,7 @@ class Peasant(Entity):
         self.offset = offset
         self.interact()
 
-        distance = self.get_distance_and_direction(self.player)
+        distance = self.get_distance_and_direction(self.player.rect.center)
         if self.start_dialog and distance < 100:
             if self.my_quest.check():
                 self.dialog.change_text(self.finished_text)

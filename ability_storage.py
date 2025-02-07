@@ -33,6 +33,11 @@ class AllAbilities:
                         'key': pg.K_t,
                         'sprite': 'sprite/blizzard_attack.png',
                         'cd': 5000},
+                'blink': {
+                        'method': self.blink,
+                        'key': pg.K_b,
+                        'sprite': 'sprite/blink.png',
+                        'cd': 500},
               }
 
     def get_abilities(self, abilities):
@@ -63,6 +68,9 @@ class AllAbilities:
 
     def blizzard(self, attacker):
         Blizzard((self.visible, self.bullet_group(attacker)), attacker)
+
+    def blink(self, attacker):
+        Blink(attacker, self.obstacles)
 
 
 class Cooldown:
