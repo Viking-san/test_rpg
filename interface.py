@@ -45,6 +45,10 @@ class HotKeys:
         busy_keys = [self.abilities[i]['key'] for i in self.abilities]
         self.busy_keys = self.base_busy_keys + busy_keys
 
+        self.grey_surf = pg.Surface(self.rect.size)
+        self.grey_surf.fill((100, 100, 100))
+        self.grey_surf.set_alpha(180)
+
         """
         Важно. 
         Вероятно нужно будет при добавлении/изменении/удалении спела на панели абилок 
@@ -119,13 +123,15 @@ class HotKeys:
             if current_time > self.change_locker_state_time + self.change_locker_state_timer_start:
                 self.can_change_locker_state = True
 
-    def display_cooldown(self, pos, cooldown, display):
+    def display_cooldown(self, rect, cooldown, display):
+        display.blit(self.grey_surf, rect)
+
         if cooldown >= 1000:
             cooldown = str(cooldown // 1000)
         else:
-            cooldown = str((cooldown // 100) / 10)[1:]
+            cooldown = str((cooldown // 100) / 10)
         text = self.font.render(cooldown, 0, 'white', 'black')
-        rect = text.get_rect(midbottom=pos)
+        rect = text.get_rect(midbottom=rect.midbottom)
         display.blit(text, rect)
 
     def update(self, display, cooldown):
@@ -140,7 +146,7 @@ class HotKeys:
             display.blit(self.key_names[index], rect)
             time_remain = cooldown.get(ability, {"time_remain": 0})["time_remain"]
             if time_remain:
-                self.display_cooldown(rect.midbottom, time_remain, display)
+                self.display_cooldown(rect, time_remain, display)
 
 
 class Button:
@@ -183,6 +189,3 @@ class Button:
     def update(self):
         self.draw()
         return self.button_pressed_and_released()
-
-
-

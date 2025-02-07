@@ -43,23 +43,26 @@ class AllAbilities:
         return result
 
     def bullet_group(self, attacker):
-        bullet_group = self.sprite_groups['bullets'] if attacker.type == 'player' else self.sprite_groups['enemy_bullet']
+        if attacker.type == 'player':
+            bullet_group = self.sprite_groups['bullets']
+        else:
+            bullet_group = self.sprite_groups['enemy_bullet']
         return bullet_group
 
     def create_bullet(self, attacker):
-        Bullet([self.visible, self.bullet_group(attacker)], attacker, self.obstacles)
+        Bullet((self.visible, self.bullet_group(attacker)), attacker, self.obstacles)
 
     def create_fireball(self, attacker):
-        Fireball([self.visible, self.bullet_group(attacker)], attacker, self.obstacles)
+        Fireball((self.visible, self.bullet_group(attacker)), attacker, self.obstacles)
 
     def create_frostbolt(self, attacker):
-        Frostblot([self.visible, self.bullet_group(attacker)], attacker, self.obstacles)
+        Frostblot((self.visible, self.bullet_group(attacker)), attacker, self.obstacles)
 
     def flame_strike(self, attacker):
-        FlameStrike([self.visible, self.bullet_group(attacker)], attacker)
+        FlameStrike((self.visible, self.bullet_group(attacker)), attacker)
 
     def blizzard(self, attacker):
-        Blizzard([self.visible, self.bullet_group(attacker)], attacker)
+        Blizzard((self.visible, self.bullet_group(attacker)), attacker)
 
 
 class Cooldown:

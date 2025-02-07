@@ -12,7 +12,7 @@ class Sceleton(Entity):
         self.type = 'sceleton'
         self.original_surf = pg.image.load('sprite/enemy.png')
         self.image = copy(self.original_surf)
-        self.rect = self.image.get_rect(topleft=(pos))
+        self.rect = self.image.get_rect(topleft=pos)
         self.hit_box = self.rect.inflate(-6, -6)
         self.current_pos = deepcopy(self.hit_box.center)
         self.obstacles = obstacles
@@ -51,7 +51,7 @@ class FireElemental(Entity):
         self.type = 'fire elemental'
         self.original_surf = pg.image.load('sprite/fireelemental.png').convert_alpha()
         self.image = copy(self.original_surf)
-        self.rect = self.image.get_rect(topleft=(pos))
+        self.rect = self.image.get_rect(topleft=pos)
         self.hit_box = self.rect.inflate(-6, -6)
         self.obstacles = obstacles
 
