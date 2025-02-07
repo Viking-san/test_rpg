@@ -271,18 +271,17 @@ class Blizzard(AOEOnPoint):
 
 
 class Blink:
-    def __init__(self, player, obstacle):
+    def __init__(self, player):
         self.player = player
 
         if self.player.is_casting:
             return
 
-        self.obstacles = obstacle
         self.type = 'blink'
         self.pos = pg.mouse.get_pos() + self.player.offset
 
         distance = self.player.get_distance_and_direction(self.pos)
-        self.possible_places = [distance // 4 * i for i in range(4)]
+        self.possible_distances = [distance // 4 * i for i in range(4)]
 
         self.reposition()
 
@@ -291,13 +290,14 @@ class Blink:
         return self.player.is_los(rect)
 
     def find_new_pos(self):
-        while not self.check_los():
-            new_pos_x = self.player.hit_box.centerx + self.player.vector.x * self.possible_places[-1]
-            new_pos_y = self.player.hit_box.centery + self.player.vector.y * self.possible_places[-1]
+        while not self.check_los() and self.possible_distances:
+            new_pos_x = self.player.hit_box.centerx + self.player.vector.x * self.possible_distances[-1]
+            new_pos_y = self.player.hit_box.centery + self.player.vector.y * self.possible_distances[-1]
             self.pos = [int(new_pos_x), int(new_pos_y)]
-            self.possible_places.pop()
+            self.possible_distances.pop()
 
-        self.player.hit_box.center = self.pos
+        if self.check_los():
+            self.player.hit_box.center = self.pos
         self.player.vector.x = 0
         self.player.vector.y = 0
 

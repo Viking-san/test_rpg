@@ -70,7 +70,7 @@ class AllAbilities:
         Blizzard((self.visible, self.bullet_group(attacker)), attacker)
 
     def blink(self, attacker):
-        Blink(attacker, self.obstacles)
+        Blink(attacker)
 
 
 class Cooldown:
