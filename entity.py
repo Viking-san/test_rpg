@@ -109,7 +109,6 @@ class Entity(pg.sprite.Sprite):
                 if sprite.is_casting:
                     continue
                 self.health -= sprite.damage
-                print(int(self.health))
                 self.my_effects.add_effect(sprite.effects)
 
                 if sprite.die_by_collide_enemy:

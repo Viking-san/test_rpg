@@ -16,8 +16,7 @@ class ProjectileSpell(pg.sprite.Sprite):
         self.display = pg.display.get_surface()
         self.rotatable = True
 
-        # self.global_ticks = None
-        self.cast_time_start = None
+        self.cast_time_start = self.player.global_ticks
         self.cast_time = 1000
         self.angle = 0
         self.vector = pg.math.Vector2(0, -1)
@@ -65,10 +64,6 @@ class ProjectileSpell(pg.sprite.Sprite):
             self.cast_bar.draw(self.display, current_time - self.cast_time_start, pos)
 
     def update(self, offset):
-        # self.global_ticks = global_ticks
-        if not self.cast_time_start:
-            self.cast_time_start = self.player.global_ticks
-
         self.timer(offset)
         self.collide_obstacles()
         if self.is_casting:
@@ -92,7 +87,7 @@ class Bullet(ProjectileSpell):
         self.rect = self.image.get_rect(center=self.player.rect.center)
 
         self.type = 'bullet'
-        self.attack = 1
+        self.attack = 2
         self.speed = 9
 
         self.ttl = 1000
@@ -168,8 +163,7 @@ class AOEOnPoint(pg.sprite.Sprite):
         self.player.is_casting = True
         self.display = pg.display.get_surface()
 
-        # self.global_ticks = None
-        self.cast_time_start = None
+        self.cast_time_start = self.player.global_ticks
         self.cast_time = 1000
         self.current_cast_time = 0
         self.attack = 1
@@ -211,10 +205,6 @@ class AOEOnPoint(pg.sprite.Sprite):
             self.cast_bar.draw(self.display, current_time - self.cast_time_start, pos)
 
     def update(self, offset):
-        # self.global_ticks = self.player.global_ticks
-        if not self.cast_time_start:
-            self.cast_time_start = self.player.global_ticks
-
         self.timer(offset)
         self.offset = offset
         if self.is_casting:

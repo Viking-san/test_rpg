@@ -12,7 +12,7 @@ class AllAbilities:
                         'method': self.create_bullet,
                         'key': 101,
                         'sprite': 'sprite/bullet.png',
-                        'cd': 30},
+                        'cd': 50},
                 'fireball': {
                         'method': self.create_fireball,
                         'key': pg.K_f,
@@ -79,7 +79,6 @@ class Cooldown:
         self.cant_use = dict()
 
     def add_ability(self, ability, global_ticks):
-        # self.cant_use[ability] = {'cast_time': pg.time.get_ticks(), 'time_remain': self.abilities[ability]['cd']}
         self.cant_use[ability] = {'cast_time': global_ticks, 'time_remain': self.abilities[ability]['cd']}
 
     def clear_ability(self):
@@ -92,7 +91,6 @@ class Cooldown:
             del self.cant_use[ability]
 
     def timers(self, global_ticks):
-        # current_time = pg.time.get_ticks()
         current_time = global_ticks
         for ability in self.cant_use:
             time_remain = max(self.abilities[ability]['cd'] + self.cant_use[ability]['cast_time'] - current_time, 0)

@@ -7,6 +7,7 @@ from tiles import *
 from interface import *
 from ability_storage import AllAbilities
 from npc import Peasant
+from menu import *
 
 
 class Game:
@@ -35,20 +36,16 @@ class Game:
         self.all_abilities = AllAbilities(sprite_groups_for_abilities)
 
         abilities_for_player = ['bullet', 'fireball', 'frostbolt', 'flame_strike', 'blizzard', 'blink']
-        abilities_for_player = self.all_abilities.get_abilities(abilities_for_player)
-        self.player = Player((), (50, 50), abilities_for_player, self.obstacle_sprite)
-        self.hotkeys = HotKeys(abilities_for_player)
+        self.abilities_for_player = self.all_abilities.get_abilities(abilities_for_player)
+        self.player = Player((), (50, 50), self.abilities_for_player, self.obstacle_sprite)
+        self.hotkeys = HotKeys(self.abilities_for_player)
 
         self.global_ticks = 0
         self.delta_ticks = 0
         self.offset = pg.math.Vector2()
         self.create_map()
 
-        self.pause_font = pg.font.Font('joystix.ttf', 32)
-        self.pause_text = self.pause_font.render('Pause', 0, 'white')
-        self.pause_rect = self.pause_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-        self.pause_surf = pg.Surface(self.pause_rect.size)
-        self.pause_button = Button(self.pause_rect.width, 50, 'exit', self.pause_rect.bottomleft)
+        self.pause_menu = Pause(self.display)
 
     def create_map(self):
         for y, map_string in enumerate(MAP):
@@ -72,10 +69,10 @@ class Game:
                     Peasant((self.npc,), pos, self.player)
 
     def camera(self):
-        prev_ticks = self.global_ticks
+        previous_ticks = self.global_ticks
         self.global_ticks = pg.time.get_ticks()
         if self.pause:
-            self.delta_ticks += self.global_ticks - prev_ticks
+            self.delta_ticks += self.global_ticks - previous_ticks
 
         self.display.fill('white')
 
@@ -106,18 +103,44 @@ class Game:
             self.bullets.update(self.offset)
             self.enemy_bullet.update(self.offset)
 
-    def pause_menu(self):
-        self.display.blit(self.pause_surf, self.pause_rect)
-        self.display.blit(self.pause_text, self.pause_rect)
-        if self.pause_button.update():
-            self.running = False
+    @staticmethod
+    def clear_sprites(groups):
+        for group in groups:
+            for sprite in group:
+                sprite.kill()
+
+    def restart(self):
+        self.clear_sprites((self.enemies, self.bullets, self.enemy_bullet, self.npc))
+
+        self.player = Player((), (50, 50), self.abilities_for_player, self.obstacle_sprite)
+
+        for y, map_string in enumerate(MAP):
+            for x, tile in enumerate(map_string):
+                pos = (x * TILE_SIZE, y * TILE_SIZE)
+                if tile == 'e':
+                    Sceleton((self.enemies,),
+                             pos,
+                             self.all_abilities.get_abilities(['bullet']),
+                             self.obstacle_sprite)
+                elif tile == 'f':
+                    FireElemental((self.enemies,),
+                                  pos,
+                                  self.all_abilities.get_abilities(['fireball', 'bullet', 'frostbolt']),
+                                  self.obstacle_sprite)
+                elif tile == 'k':
+                    Peasant((self.npc,), pos, self.player)
 
     def draw(self):
         self.camera()
         self.hotkeys.update(self.display, self.player.cooldown.cant_use)
-        print(self.global_ticks - self.delta_ticks, self.delta_ticks)
+
         if self.pause:
-            self.pause_menu()
+            instruction = self.pause_menu.update()
+            if instruction == 1:
+                self.running = False
+            elif instruction == 2:
+                self.restart()
+                self.pause = False
 
         if self.player.is_dead():
             self.pause = True
