@@ -30,6 +30,7 @@ class Player(Entity):
         self.quests = []
 
         self.activate_cooldown()
+        self.global_ticks = None
 
     def input(self):
         keys = pg.key.get_pressed()

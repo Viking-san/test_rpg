@@ -16,7 +16,7 @@ class ProjectileSpell(pg.sprite.Sprite):
         self.display = pg.display.get_surface()
         self.rotatable = True
 
-        self.global_ticks = None
+        # self.global_ticks = None
         self.cast_time_start = None
         self.cast_time = 1000
         self.angle = 0
@@ -45,7 +45,7 @@ class ProjectileSpell(pg.sprite.Sprite):
             self.image = pg.transform.rotate(self.surf, -self.angle)
 
     def timer(self, offset):
-        current_time = self.global_ticks
+        current_time = self.player.global_ticks
         cast_is_over_time = self.cast_time + self.cast_time_start
         self.current_cast_time = current_time - self.cast_time_start
 
@@ -55,7 +55,7 @@ class ProjectileSpell(pg.sprite.Sprite):
                 self.is_casting = False
                 self.player.is_casting = False
                 self.damage = self.attack
-                self.player.cooldown.add_ability(self.type, self.global_ticks)
+                self.player.cooldown.add_ability(self.type, self.player.global_ticks)
 
         if current_time >= cast_is_over_time + self.ttl:
             self.kill()
@@ -64,10 +64,10 @@ class ProjectileSpell(pg.sprite.Sprite):
             pos = self.player.hit_box.center - offset + (-25, -25)
             self.cast_bar.draw(self.display, current_time - self.cast_time_start, pos)
 
-    def update(self, offset, global_ticks):
-        self.global_ticks = global_ticks
+    def update(self, offset):
+        # self.global_ticks = global_ticks
         if not self.cast_time_start:
-            self.cast_time_start = global_ticks
+            self.cast_time_start = self.player.global_ticks
 
         self.timer(offset)
         self.collide_obstacles()
@@ -168,7 +168,7 @@ class AOEOnPoint(pg.sprite.Sprite):
         self.player.is_casting = True
         self.display = pg.display.get_surface()
 
-        self.global_ticks = None
+        # self.global_ticks = None
         self.cast_time_start = None
         self.cast_time = 1000
         self.current_cast_time = 0
@@ -191,7 +191,7 @@ class AOEOnPoint(pg.sprite.Sprite):
             self.kill()
 
     def timer(self, offset):
-        current_time = self.global_ticks
+        current_time = self.player.global_ticks
         cast_is_over_time = self.cast_time + self.cast_time_start
         self.current_cast_time = current_time - self.cast_time_start
 
@@ -201,7 +201,7 @@ class AOEOnPoint(pg.sprite.Sprite):
                 self.player.is_casting = False
                 self.damage = self.attack
                 self.image = copy(self.surf2)
-                self.player.cooldown.add_ability(self.type, self.global_ticks)
+                self.player.cooldown.add_ability(self.type, self.player.global_ticks)
 
         if current_time >= cast_is_over_time + self.ttl:
             self.kill()
@@ -210,10 +210,10 @@ class AOEOnPoint(pg.sprite.Sprite):
             pos = self.player.hit_box.center - offset + (-25, -25)
             self.cast_bar.draw(self.display, current_time - self.cast_time_start, pos)
 
-    def update(self, offset, global_ticks):
-        self.global_ticks = global_ticks
+    def update(self, offset):
+        # self.global_ticks = self.player.global_ticks
         if not self.cast_time_start:
-            self.cast_time_start = global_ticks
+            self.cast_time_start = self.player.global_ticks
 
         self.timer(offset)
         self.offset = offset
@@ -297,19 +297,18 @@ class Blink:
         return self.player.is_los(rect)
 
     def find_new_pos(self):
-        while not self.check_los() and self.possible_distances:
-            new_pos_x = self.player.hit_box.centerx + self.player.vector.x * self.possible_distances[-1]
-            new_pos_y = self.player.hit_box.centery + self.player.vector.y * self.possible_distances[-1]
-            self.pos = [int(new_pos_x), int(new_pos_y)]
+        while self.possible_distances:
+            if self.check_los():
+                self.player.hit_box.center = self.pos
+                break
+
+            self.pos = self.player.hit_box.center + self.player.vector * self.possible_distances[-1]
             self.possible_distances.pop()
 
-        if self.check_los():
-            self.player.hit_box.center = self.pos
-        self.player.vector.x = 0
-        self.player.vector.y = 0
+        self.player.vector = pg.Vector2()
 
     def reposition(self):
         self.find_new_pos()
-        self.player.cooldown.add_ability(self.type)
+        self.player.cooldown.add_ability(self.type, self.player.global_ticks)
 
 

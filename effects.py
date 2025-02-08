@@ -13,7 +13,8 @@ class Freeze:
         self.works_time = 1000
         self.expire = False
 
-        self.begin_at = pg.time.get_ticks()
+        self.begin_at = self.entity.global_ticks
+        # self.begin_at = pg.time.get_ticks()
 
         self.change_entity()
 
@@ -37,7 +38,8 @@ class Freeze:
         self.entity.speed = 0
 
     def timer(self):
-        current_time = pg.time.get_ticks()
+        current_time = self.entity.global_ticks
+        # current_time = pg.time.get_ticks()
 
         if current_time >= self.works_time + self.begin_at:
             print('unfreeze')
@@ -65,7 +67,8 @@ class Burning:
         self.tick_damage = int(damage) / self.ticks
         self.ticks_count = 1
 
-        self.begin_at = pg.time.get_ticks()
+        self.begin_at = self.entity.global_ticks
+        # self.begin_at = pg.time.get_ticks()
         self.expire = False
 
         self.change_entity()
@@ -89,7 +92,8 @@ class Burning:
         print('unburn')
 
     def timer(self):
-        current_time = pg.time.get_ticks()
+        current_time = self.entity.global_ticks
+        # current_time = pg.time.get_ticks()
 
         if current_time > self.begin_at + self.tick_time * self.ticks_count:
             self.ticks_count += 1
@@ -113,7 +117,8 @@ class Slow:
 
         self.works_time = 1500
 
-        self.begin_at = pg.time.get_ticks()
+        # self.begin_at = pg.time.get_ticks()
+        self.begin_at = self.entity.global_ticks
         self.expire = False
 
         self.change_entity()
@@ -127,7 +132,8 @@ class Slow:
             self.entity.speed = 1
 
     def timer(self):
-        current_time = pg.time.get_ticks()
+        # current_time = pg.time.get_ticks()
+        current_time = self.entity.global_ticks
 
         if current_time >= self.works_time + self.begin_at:
             print('unslow')

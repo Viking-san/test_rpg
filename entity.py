@@ -29,6 +29,7 @@ class Entity(pg.sprite.Sprite):
         self.pathfinder = Pathfinder()
         self.pathfinder_control = False
         self.player = None
+        self.global_ticks = None
         self.statistics = {'killed': {}, 'collected': {}}
 
     def activate_cooldown(self):
@@ -142,6 +143,7 @@ class Entity(pg.sprite.Sprite):
 
     def all_entities_updater(self, offset, bullets, global_ticks):
         self.is_moving = False
+        self.global_ticks = global_ticks
         self.cooldown.update(global_ticks)
         self.my_effects.update(offset)
         self.collide_bullets(bullets)

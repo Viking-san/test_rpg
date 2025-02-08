@@ -103,8 +103,8 @@ class Game:
             self.player.update(self.offset, self.enemies, self.enemy_bullet, self.global_ticks - self.delta_ticks)
             self.enemies.update(self.offset, self.player, self.bullets, self.global_ticks - self.delta_ticks)
             self.npc.update(self.offset)
-            self.bullets.update(self.offset, self.global_ticks - self.delta_ticks)
-            self.enemy_bullet.update(self.offset, self.global_ticks - self.delta_ticks)
+            self.bullets.update(self.offset)
+            self.enemy_bullet.update(self.offset)
 
     def pause_menu(self):
         self.display.blit(self.pause_surf, self.pause_rect)
