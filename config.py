@@ -14,12 +14,12 @@ MAP = [
     'wx x x x x x x x xwx x x ww',
     '  x x x    x x x wwwwww x w',
     'wwww  wwwwwwx x x x x x xww',
-    'wx x x x x x ex ww  x  x ww',
+    'wx x x x x x  x ww  x  x ww',
     'w x x x x x xe x x x x  www',
     'wx x x x xww x x x x x x ww',
     'w x x x x x xwwwwwwww  xwww',
     'wx x x x x x wwwwww  x x ww',
-    'w x x  k x x x x x x x x xw',
+    'w x x  k x x x x x x x   xw',
     'wx x x   x x x x x xwwwwx w',
     'w x x       x x x   x xwwww',
     'wx x x x x xwww x x   wwwww',
@@ -29,7 +29,7 @@ MAP = [
     'wx x   x x x x x x x x x ww',
     'w x x x xwww x x x x x x xw',
     'wx x x x x x x x xwwwwfx ww',
-    'w x x x x x x x x x x x xww',
+    'w xex x x x     x x x x xww',
     'wwwwwwwwwwwwwwwwwwwwwwwwwww',
 ]
 

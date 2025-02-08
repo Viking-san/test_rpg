@@ -16,8 +16,9 @@ class ProjectileSpell(pg.sprite.Sprite):
         self.display = pg.display.get_surface()
         self.rotatable = True
 
+        self.global_ticks = None
+        self.cast_time_start = None
         self.cast_time = 1000
-        self.cast_time_start = pg.time.get_ticks()
         self.angle = 0
         self.vector = pg.math.Vector2(0, -1)
         self.damage = 0
@@ -27,9 +28,9 @@ class ProjectileSpell(pg.sprite.Sprite):
         self.type = 'bullet'
         self.effects = []
         self.current_cast_time = 0
+        self.die_by_collide_enemy = True
 
         self.obstacles = obstacles
-        self.die_by_collide_enemy = True
 
     def collide_obstacles(self):
         for sprite in self.obstacles:
@@ -44,7 +45,7 @@ class ProjectileSpell(pg.sprite.Sprite):
             self.image = pg.transform.rotate(self.surf, -self.angle)
 
     def timer(self, offset):
-        current_time = pg.time.get_ticks()
+        current_time = self.global_ticks
         cast_is_over_time = self.cast_time + self.cast_time_start
         self.current_cast_time = current_time - self.cast_time_start
 
@@ -63,10 +64,13 @@ class ProjectileSpell(pg.sprite.Sprite):
             pos = self.player.hit_box.center - offset + (-25, -25)
             self.cast_bar.draw(self.display, current_time - self.cast_time_start, pos)
 
-    def update(self, offset):
-        self.collide_obstacles()
-        # self.player.is_casting = self.is_casting
+    def update(self, offset, global_ticks):
+        self.global_ticks = global_ticks
+        if not self.cast_time_start:
+            self.cast_time_start = global_ticks
+
         self.timer(offset)
+        self.collide_obstacles()
         if self.is_casting:
             if self.player.is_moving or self.player.is_attacked or self.player.is_dead():
                 self.is_casting = False
@@ -164,8 +168,9 @@ class AOEOnPoint(pg.sprite.Sprite):
         self.player.is_casting = True
         self.display = pg.display.get_surface()
 
+        self.global_ticks = None
+        self.cast_time_start = None
         self.cast_time = 1000
-        self.cast_time_start = pg.time.get_ticks()
         self.current_cast_time = 0
         self.attack = 1
         self.damage = 0
@@ -186,7 +191,7 @@ class AOEOnPoint(pg.sprite.Sprite):
             self.kill()
 
     def timer(self, offset):
-        current_time = pg.time.get_ticks()
+        current_time = self.global_ticks
         cast_is_over_time = self.cast_time + self.cast_time_start
         self.current_cast_time = current_time - self.cast_time_start
 
@@ -205,7 +210,11 @@ class AOEOnPoint(pg.sprite.Sprite):
             pos = self.player.hit_box.center - offset + (-25, -25)
             self.cast_bar.draw(self.display, current_time - self.cast_time_start, pos)
 
-    def update(self, offset):
+    def update(self, offset, global_ticks):
+        self.global_ticks = global_ticks
+        if not self.cast_time_start:
+            self.cast_time_start = global_ticks
+
         self.timer(offset)
         self.offset = offset
         if self.is_casting:
@@ -231,8 +240,7 @@ class FlameStrike(AOEOnPoint):
         self.distance = 150
         self.check_distance()
 
-        self.cast_time = 300
-        self.cast_time_start = pg.time.get_ticks()
+        self.cast_time = 3000
         self.current_cast_time = 0
         self.attack = 2
         self.damage = 0
@@ -259,7 +267,6 @@ class Blizzard(AOEOnPoint):
         self.check_distance()
 
         self.cast_time = 200
-        self.cast_time_start = pg.time.get_ticks()
         self.current_cast_time = 0
         self.attack = 2
         self.damage = 0

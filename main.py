@@ -39,6 +39,8 @@ class Game:
         self.player = Player((), (50, 50), abilities_for_player, self.obstacle_sprite)
         self.hotkeys = HotKeys(abilities_for_player)
 
+        self.global_ticks = pg.time.get_ticks()
+        self.delta_ticks = 0
         self.offset = pg.math.Vector2()
         self.create_map()
 
@@ -70,6 +72,10 @@ class Game:
                     Peasant((self.npc,), pos, self.player)
 
     def camera(self):
+        prev_ticks = self.global_ticks
+        self.global_ticks = pg.time.get_ticks() - self.delta_ticks
+        if self.pause:
+            self.delta_ticks += self.global_ticks - prev_ticks
         self.display.fill('white')
 
         self.offset.x = self.player.rect.centerx - WIDTH // 2
@@ -96,8 +102,8 @@ class Game:
             self.player.update(self.offset, self.enemies, self.enemy_bullet)
             self.enemies.update(self.offset, self.player, self.bullets)
             self.npc.update(self.offset)
-            self.bullets.update(self.offset)
-            self.enemy_bullet.update(self.offset)
+            self.bullets.update(self.offset, self.global_ticks - self.delta_ticks)
+            self.enemy_bullet.update(self.offset, self.global_ticks - self.delta_ticks)
 
     def pause_menu(self):
         self.display.blit(self.pause_surf, self.pause_rect)
@@ -108,6 +114,7 @@ class Game:
     def draw(self):
         self.camera()
         self.hotkeys.update(self.display, self.player.cooldown.cant_use)
+        # print(self.global_ticks - self.delta_ticks, self.delta_ticks)
         if self.pause:
             self.pause_menu()
 
@@ -118,9 +125,9 @@ class Game:
 
     def run(self):
         while self.running:
-
             self.draw()
             self.clock.tick(FPS)
+
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     self.running = False

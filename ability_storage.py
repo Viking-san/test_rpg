@@ -12,7 +12,7 @@ class AllAbilities:
                         'method': self.create_bullet,
                         'key': 101,
                         'sprite': 'sprite/bullet.png',
-                        'cd': 0},
+                        'cd': 30},
                 'fireball': {
                         'method': self.create_fireball,
                         'key': pg.K_f,
