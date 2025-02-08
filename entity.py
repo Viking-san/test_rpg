@@ -140,15 +140,15 @@ class Entity(pg.sprite.Sprite):
         if self.ability_is_ready(ability):
             self.abilities[ability]['method'](self)
 
-    def all_entities_updater(self, offset, bullets):
+    def all_entities_updater(self, offset, bullets, global_ticks):
         self.is_moving = False
-        self.cooldown.update()
+        self.cooldown.update(global_ticks)
         self.my_effects.update(offset)
         self.collide_bullets(bullets)
         self.offset = offset
 
-    def identical_enemies_updater(self, offset, player, player_bullets):
-        self.all_entities_updater(offset, player_bullets)
+    def identical_enemies_updater(self, offset, player, player_bullets, global_ticks):
+        self.all_entities_updater(offset, player_bullets, global_ticks)
 
         if self.is_dead():
             self.kill()

@@ -74,8 +74,8 @@ class Player(Entity):
             if quest.check():
                 print('finished')
 
-    def update(self, offset, enemies, enemy_bullets):
+    def update(self, offset, enemies, enemy_bullets, global_ticks):
         self.follow_mouse()
-        self.all_entities_updater(offset, enemy_bullets)
+        self.all_entities_updater(offset, enemy_bullets, global_ticks)
         self.input()
         # self.check_quests()

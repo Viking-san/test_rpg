@@ -78,8 +78,9 @@ class Cooldown:
         self.abilities = abilities
         self.cant_use = dict()
 
-    def add_ability(self, ability):
-        self.cant_use[ability] = {'cast_time': pg.time.get_ticks(), 'time_remain': self.abilities[ability]['cd']}
+    def add_ability(self, ability, global_ticks):
+        # self.cant_use[ability] = {'cast_time': pg.time.get_ticks(), 'time_remain': self.abilities[ability]['cd']}
+        self.cant_use[ability] = {'cast_time': global_ticks, 'time_remain': self.abilities[ability]['cd']}
 
     def clear_ability(self):
         abilities_for_remove = []
@@ -90,12 +91,13 @@ class Cooldown:
         for ability in abilities_for_remove:
             del self.cant_use[ability]
 
-    def timers(self):
-        current_time = pg.time.get_ticks()
+    def timers(self, global_ticks):
+        # current_time = pg.time.get_ticks()
+        current_time = global_ticks
         for ability in self.cant_use:
             time_remain = max(self.abilities[ability]['cd'] + self.cant_use[ability]['cast_time'] - current_time, 0)
             self.cant_use[ability]['time_remain'] = time_remain
 
-    def update(self):
-        self.timers()
+    def update(self, global_ticks):
+        self.timers(global_ticks)
         self.clear_ability()

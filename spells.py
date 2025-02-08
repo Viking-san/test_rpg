@@ -55,7 +55,7 @@ class ProjectileSpell(pg.sprite.Sprite):
                 self.is_casting = False
                 self.player.is_casting = False
                 self.damage = self.attack
-                self.player.cooldown.add_ability(self.type)
+                self.player.cooldown.add_ability(self.type, self.global_ticks)
 
         if current_time >= cast_is_over_time + self.ttl:
             self.kill()
@@ -201,7 +201,7 @@ class AOEOnPoint(pg.sprite.Sprite):
                 self.player.is_casting = False
                 self.damage = self.attack
                 self.image = copy(self.surf2)
-                self.player.cooldown.add_ability(self.type)
+                self.player.cooldown.add_ability(self.type, self.global_ticks)
 
         if current_time >= cast_is_over_time + self.ttl:
             self.kill()

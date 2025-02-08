@@ -40,8 +40,8 @@ class Sceleton(Entity):
         else:
             self.moving()
 
-    def update(self, offset, player, player_bullets):
-        self.identical_enemies_updater(offset, player, player_bullets)
+    def update(self, offset, player, player_bullets, global_ticks):
+        self.identical_enemies_updater(offset, player, player_bullets, global_ticks)
 
 
 class FireElemental(Entity):
@@ -79,5 +79,5 @@ class FireElemental(Entity):
             self.moving()
             self.attack('bullet')
 
-    def update(self, offset, player, player_bullets):
-        self.identical_enemies_updater(offset, player, player_bullets)
+    def update(self, offset, player, player_bullets, global_ticks):
+        self.identical_enemies_updater(offset, player, player_bullets, global_ticks)

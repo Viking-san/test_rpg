@@ -39,7 +39,7 @@ class Game:
         self.player = Player((), (50, 50), abilities_for_player, self.obstacle_sprite)
         self.hotkeys = HotKeys(abilities_for_player)
 
-        self.global_ticks = pg.time.get_ticks()
+        self.global_ticks = 0
         self.delta_ticks = 0
         self.offset = pg.math.Vector2()
         self.create_map()
@@ -73,9 +73,10 @@ class Game:
 
     def camera(self):
         prev_ticks = self.global_ticks
-        self.global_ticks = pg.time.get_ticks() - self.delta_ticks
+        self.global_ticks = pg.time.get_ticks()
         if self.pause:
             self.delta_ticks += self.global_ticks - prev_ticks
+
         self.display.fill('white')
 
         self.offset.x = self.player.rect.centerx - WIDTH // 2
@@ -99,8 +100,8 @@ class Game:
         self.player.hp_bar.draw(self.display, self.player.health, self.player.rect.center - self.offset + (-25, 25))
 
         if not self.pause:
-            self.player.update(self.offset, self.enemies, self.enemy_bullet)
-            self.enemies.update(self.offset, self.player, self.bullets)
+            self.player.update(self.offset, self.enemies, self.enemy_bullet, self.global_ticks - self.delta_ticks)
+            self.enemies.update(self.offset, self.player, self.bullets, self.global_ticks - self.delta_ticks)
             self.npc.update(self.offset)
             self.bullets.update(self.offset, self.global_ticks - self.delta_ticks)
             self.enemy_bullet.update(self.offset, self.global_ticks - self.delta_ticks)
@@ -114,7 +115,7 @@ class Game:
     def draw(self):
         self.camera()
         self.hotkeys.update(self.display, self.player.cooldown.cant_use)
-        # print(self.global_ticks - self.delta_ticks, self.delta_ticks)
+        print(self.global_ticks - self.delta_ticks, self.delta_ticks)
         if self.pause:
             self.pause_menu()
 
