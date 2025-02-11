@@ -65,7 +65,7 @@ class Quest:
     def __init__(self, player):
         self.player = player
         self.type = 'sceleton'
-        self.require = 2
+        self.require = 1
 
     def check(self):
         if self.player.statistics['killed'].get(self.type, 0) == self.require:

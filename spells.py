@@ -54,7 +54,7 @@ class ProjectileSpell(pg.sprite.Sprite):
                 self.is_casting = False
                 self.player.is_casting = False
                 self.damage = self.attack
-                self.player.cooldown.add_ability(self.type, self.player.global_ticks)
+                self.player.cooldown.add_ability(self.type, self.player.global_ticks, self.cooldown)
 
         if current_time >= cast_is_over_time + self.ttl:
             self.kill()
@@ -92,6 +92,7 @@ class Bullet(ProjectileSpell):
 
         self.ttl = 1000
         self.cast_time = 0
+        self.cooldown = 50
 
         if self.cast_time:
             self.cast_bar = Bars(50, 5, 'blue', self.cast_time)
@@ -114,6 +115,7 @@ class Frostblot(ProjectileSpell):
 
         self.ttl = 1000
         self.cast_time = 300
+        self.cooldown = 1000
 
         self.cast_bar = Bars(50, 8, 'red', self.cast_time)
 
@@ -135,6 +137,7 @@ class Fireball(ProjectileSpell):
 
         self.ttl = 1000
         self.cast_time = 800
+        self.cooldown = 2000
 
         self.cast_bar = Bars(50, 8, 'red', self.cast_time)
 
@@ -195,7 +198,7 @@ class AOEOnPoint(pg.sprite.Sprite):
                 self.player.is_casting = False
                 self.damage = self.attack
                 self.image = copy(self.surf2)
-                self.player.cooldown.add_ability(self.type, self.player.global_ticks)
+                self.player.cooldown.add_ability(self.type, self.player.global_ticks, self.cooldown)
 
         if current_time >= cast_is_over_time + self.ttl:
             self.kill()
@@ -230,11 +233,12 @@ class FlameStrike(AOEOnPoint):
         self.distance = 150
         self.check_distance()
 
-        self.cast_time = 3000
+        self.cast_time = 1000
         self.current_cast_time = 0
-        self.attack = 2
+        self.attack = 200
         self.damage = 0
-        self.ttl = 3000
+        self.ttl = 30
+        self.cooldown = 2000
         self.type = 'flame_strike'
         self.effects = ['slow']
 
@@ -261,6 +265,7 @@ class Blizzard(AOEOnPoint):
         self.attack = 2
         self.damage = 0
         self.ttl = 5000
+        self.cooldown = 5000
         self.type = 'blizzard'
         self.effects = ['slow']
 
@@ -281,6 +286,8 @@ class Blink:
         steps = 8
         self.possible_distances = [distance // steps * i for i in range(steps)]
 
+        self.cooldown = 500
+
         self.reposition()
 
     def check_los(self):
@@ -300,6 +307,6 @@ class Blink:
 
     def reposition(self):
         self.find_new_pos()
-        self.player.cooldown.add_ability(self.type, self.player.global_ticks)
+        self.player.cooldown.add_ability(self.type, self.player.global_ticks, self.cooldown)
 
 
