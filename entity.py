@@ -50,15 +50,18 @@ class Entity(pg.sprite.Sprite):
         self.vector.x = 0
         self.vector.y = 0
 
-    def is_los(self, rect):
-        tl_start = self.hit_box.topleft + pg.math.Vector2(1, 1)
-        tl_end = rect.topleft + pg.math.Vector2(1, 1)
-        tr_start = self.hit_box.topright + pg.math.Vector2(-1, 1)
-        tr_end = rect.topright + pg.math.Vector2(-1, 1)
-        bl_start = self.hit_box.bottomleft + pg.math.Vector2(1, -1)
-        bl_end = rect.bottomleft + pg.math.Vector2(1, -1)
-        br_start = self.hit_box.bottomright + pg.math.Vector2(-1, -1)
-        br_end = rect.bottomright + pg.math.Vector2(-1, -1)
+    def is_los(self, rect, inflate):
+        start_hit_box = self.hit_box.inflate(-1, -1)
+        end_hit_box = rect.inflate(-inflate, -inflate)
+
+        tl_start = start_hit_box.topleft
+        tr_start = start_hit_box.topright
+        bl_start = start_hit_box.bottomleft
+        br_start = start_hit_box.bottomright
+        tl_end = end_hit_box.topleft
+        tr_end = end_hit_box.topright
+        bl_end = end_hit_box.bottomleft
+        br_end = end_hit_box.bottomright
 
         for obstacle in self.obstacles:
             check = any([obstacle.rect.clipline(tl_start, tl_end),

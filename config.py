@@ -2,7 +2,7 @@ import pygame as pg
 
 
 WIDTH = 640
-HEIGHT = 480
+HEIGHT = 360
 TILE_SIZE = 32
 
 FPS = 60
@@ -15,7 +15,7 @@ MAP = [
     '  x x x    x x x wwwwww x w',
     'wwww  wwwwwwx x x x x x xww',
     'wx x x x x x  x ww  x  x ww',
-    'w x x x x x xe x x x x  www',
+    'w x x xex x x  x x x x  www',
     'wx x x x xww x x x x x x ww',
     'w x x x x x xwwwwwwww  xwww',
     'wx x x x x x wwwwww  x x ww',
@@ -29,7 +29,7 @@ MAP = [
     'wx x   x x x x x x x x x ww',
     'w x x x xwww x x x x x x xw',
     'wx x x x x x x x xwwwwfx ww',
-    'w xex x x x     x x x x xww',
+    'w x x x x x     x x x x xww',
     'wwwwwwwwwwwwwwwwwwwwwwwwwww',
 ]
 

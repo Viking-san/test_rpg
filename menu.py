@@ -21,8 +21,8 @@ class Pause:
 
     def update(self):
         self.draw()
-        if self.pause_button.update():
+        if self.pause_button.is_used():
             return 1
-        if self.restart_button.update():
+        if self.restart_button.is_used():
             return 2
         return 0

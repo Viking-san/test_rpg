@@ -160,7 +160,9 @@ class Button:
 
         self.font = pg.font.Font('joystix.ttf', 12)
         self.rect = pg.Rect(*pos, self.width, self.height)
-        self.color = (50, 50, 50)
+        self.default_color = (50, 50, 50)
+        self.collide_color = (150, 150, 150)
+        self.color = self.default_color
 
         self.button_pressed = False
 
@@ -169,13 +171,18 @@ class Button:
         rect = text.get_rect(center=self.rect.center)
 
         pg.draw.rect(self.display, self.color, self.rect)
+        pg.draw.rect(self.display, (150, 150, 150), self.rect, 2)
+
         self.display.blit(text, rect)
 
     def check_mouse_collision(self):
         mouse_pos = pg.mouse.get_pos()
         if self.rect.collidepoint(mouse_pos):
+            self.color = self.collide_color
             return True
-        return False
+        else:
+            self.color = self.default_color
+            return False
 
     def button_pressed_and_released(self):
         if self.check_mouse_collision() and pg.mouse.get_pressed()[0]:
@@ -186,6 +193,6 @@ class Button:
             return True
         return False
 
-    def update(self):
+    def is_used(self):
         self.draw()
         return self.button_pressed_and_released()

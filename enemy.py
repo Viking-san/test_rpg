@@ -33,7 +33,7 @@ class Sceleton(Entity):
         if distance > self.agro_radius or self.pathfinder_control:
             return
 
-        if not self.is_los(player.hit_box):
+        if not self.is_los(player.hit_box, 2):
             self.pathfinder.go_find(self, player)
         elif distance <= self.attack_radius:
             self.attack('bullet')
@@ -71,7 +71,7 @@ class FireElemental(Entity):
         if distance > self.agro_radius or self.pathfinder_control:
             return
 
-        if not self.is_los(player.hit_box):
+        if not self.is_los(player.hit_box, 2):
             self.pathfinder.go_find(self, player)
         elif distance <= self.attack_radius and self.ability_is_ready('fireball'):
             self.abilities['fireball']['method'](self)

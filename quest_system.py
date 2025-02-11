@@ -47,10 +47,10 @@ class Dialog:
         pg.draw.rect(self.display, (50, 50, 50), self.bg_rect)
         self.create_text()
 
-        if self.button_accept.update():
+        if self.button_accept.is_used():
             print('accept')
             return 1
-        if self.button_exit.update():
+        if self.button_exit.is_used():
             print('exit')
             return -1
         return 0

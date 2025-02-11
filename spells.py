@@ -278,13 +278,14 @@ class Blink:
         self.pos = pg.mouse.get_pos() + self.player.offset
 
         distance = self.player.get_distance_and_direction(self.pos)
-        self.possible_distances = [distance // 4 * i for i in range(4)]
+        steps = 8
+        self.possible_distances = [distance // steps * i for i in range(steps)]
 
         self.reposition()
 
     def check_los(self):
         rect = pg.Rect((self.pos[0] - 13, self.pos[1] - 13, 26, 26))
-        return self.player.is_los(rect)
+        return self.player.is_los(rect, -2)
 
     def find_new_pos(self):
         while self.possible_distances:
