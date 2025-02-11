@@ -74,7 +74,6 @@ class Cooldown:
 
     def add_ability(self, ability, global_ticks, cooldown):
         self.cant_use[ability] = {'cast_time': global_ticks, 'time_remain': cooldown, 'cooldown': cooldown}
-        # self.cant_use[ability] = {'cast_time': global_ticks, 'time_remain': self.abilities[ability]['cd']}
 
     def clear_ability(self):
         abilities_for_remove = []
@@ -88,8 +87,8 @@ class Cooldown:
     def timers(self, global_ticks):
         current_time = global_ticks
         for ability in self.cant_use:
-            time_remain = max(self.cant_use[ability]['cooldown'] + self.cant_use[ability]['cast_time'] - current_time, 0)
-            self.cant_use[ability]['time_remain'] = time_remain
+            remain = max(self.cant_use[ability]['cooldown'] + self.cant_use[ability]['cast_time'] - current_time, 0)
+            self.cant_use[ability]['time_remain'] = remain
 
     def update(self, global_ticks):
         self.timers(global_ticks)

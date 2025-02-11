@@ -32,6 +32,9 @@ class Entity(pg.sprite.Sprite):
         self.global_ticks = None
         self.statistics = {'killed': {}, 'collected': {}}
 
+        self.direction = 'down'
+        self.status = 'idle'
+
     def activate_cooldown(self):
         self.cooldown = Cooldown(self.abilities)
 

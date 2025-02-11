@@ -4,6 +4,7 @@ from copy import copy, deepcopy
 from interface import Bars
 from quest_system import Quest
 from ability_storage import Cooldown
+from graphics import *
 
 
 class Player(Entity):
@@ -32,17 +33,28 @@ class Player(Entity):
         self.activate_cooldown()
         self.global_ticks = None
 
+        self.animation = AnimatePlayer(self)
+
     def input(self):
         keys = pg.key.get_pressed()
 
+        self.status = 'idle'
         if keys[pg.K_w]:
             self.vector.y = -1
+            self.status = 'move'
+            self.direction = 'up'
         if keys[pg.K_s]:
             self.vector.y = 1
+            self.status = 'move'
+            self.direction = 'down'
         if keys[pg.K_a]:
             self.vector.x = -1
+            self.status = 'move'
+            self.direction = 'left'
         if keys[pg.K_d]:
             self.vector.x = 1
+            self.status = 'move'
+            self.direction = 'right'
 
         if self.vector:
             self.vector.normalize_ip()
@@ -67,8 +79,8 @@ class Player(Entity):
         direction = mouse_pos - rect_pos
 
         self.angle = polar_vector.angle_to(direction)
-        self.image = pg.transform.rotate(self.original_surf, -self.angle)
-        self.rect = self.image.get_rect(center=self.hit_box.center)
+        # self.image = pg.transform.rotate(self.original_surf, -self.angle)
+        # self.rect = self.image.get_rect(center=self.hit_box.center)
 
     def check_quests(self):
         for quest in self.quests:
@@ -77,6 +89,7 @@ class Player(Entity):
 
     def update(self, offset, enemies, enemy_bullets, global_ticks):
         self.follow_mouse()
+        self.animation.update()
         self.all_entities_updater(offset, enemy_bullets, global_ticks)
         self.input()
         # self.check_quests()
