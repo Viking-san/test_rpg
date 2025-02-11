@@ -12,7 +12,8 @@ class Player(Entity):
         super().__init__(groups)
 
         self.type = 'player'
-        self.original_surf = pg.image.load('sprite/ship.png').convert_alpha()
+        self.original_surf = pg.image.load('sprite/player/idle/down/down.png').convert_alpha()
+        # self.original_surf = pg.image.load('sprite/player/idle/down/down.png').convert_alpha()
         self.image = copy(self.original_surf)
         self.rect = self.image.get_rect(topleft=pos)
         self.hit_box = self.rect.inflate(-6, -6)
@@ -79,8 +80,18 @@ class Player(Entity):
         direction = mouse_pos - rect_pos
 
         self.angle = polar_vector.angle_to(direction)
-        # self.image = pg.transform.rotate(self.original_surf, -self.angle)
-        # self.rect = self.image.get_rect(center=self.hit_box.center)
+        self.angle = self.angle if self.angle > 0 else 360 + self.angle
+
+        if self.angle < 45:
+            self.direction = 'up'
+        elif self.angle < 135:
+            self.direction = 'right'
+        elif self.angle < 225:
+            self.direction = 'down'
+        elif self.angle < 315:
+            self.direction = 'left'
+        else:
+            self.direction = 'up'
 
     def check_quests(self):
         for quest in self.quests:
@@ -88,7 +99,6 @@ class Player(Entity):
                 print('finished')
 
     def update(self, offset, enemies, enemy_bullets, global_ticks):
-        self.follow_mouse()
         self.animation.update()
         self.all_entities_updater(offset, enemy_bullets, global_ticks)
         self.input()
