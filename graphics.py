@@ -45,7 +45,6 @@ class AnimatePlayer:
         self.sprites['move']['right'] = [move_right_0, move_right_1]
 
     def processing(self):
-        print(self.player.direction, self.player.status)
         self.animation_index += self.animation_speed
         if self.animation_index >= len(self.sprites[self.player.status][self.player.direction]):
             self.animation_index = 0

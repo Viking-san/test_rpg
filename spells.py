@@ -15,6 +15,8 @@ class ProjectileSpell(pg.sprite.Sprite):
         self.player.is_casting = True
         self.display = pg.display.get_surface()
         self.rotatable = True
+        if self.player.type == 'player':
+            self.player.follow_mouse()
 
         self.cast_time_start = self.player.global_ticks
         self.cast_time = 1000
@@ -147,7 +149,6 @@ class Fireball(ProjectileSpell):
 class AOEOnPoint(pg.sprite.Sprite):
     def __init__(self, groups, player):
         super().__init__(groups)
-
         self.display = pg.display.get_surface()
         self.surf1 = copy(DEFAULT_IMAGE)
         self.surf1 = pg.transform.scale(self.surf1, (64, 64))
@@ -164,7 +165,8 @@ class AOEOnPoint(pg.sprite.Sprite):
         if self.player.is_casting:
             self.kill()
         self.player.is_casting = True
-        self.display = pg.display.get_surface()
+        if self.player.type == 'player':
+            self.player.follow_mouse()
 
         self.cast_time_start = self.player.global_ticks
         self.cast_time = 1000
@@ -278,6 +280,9 @@ class Blink:
 
         if self.player.is_casting:
             return
+
+        if self.player.type == 'player':
+            self.player.follow_mouse()
 
         self.type = 'blink'
         self.pos = pg.mouse.get_pos() + self.player.offset
