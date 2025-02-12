@@ -8,6 +8,7 @@ from interface import *
 from ability_storage import AllAbilities
 from npc import Peasant
 from menu import *
+import csv
 
 
 class Game:
@@ -38,12 +39,17 @@ class Game:
         abilities_for_player = ['bullet', 'fireball', 'frostbolt', 'flame_strike', 'blizzard', 'blink']
         self.abilities_for_player = self.all_abilities.get_abilities(abilities_for_player)
         self.player = Player((), (50, 50), self.abilities_for_player, self.obstacle_sprite)
+        FireElemental((self.enemies,),
+                      (100, 50),
+                      self.all_abilities.get_abilities(['fireball', 'bullet', 'frostbolt']),
+                      self.obstacle_sprite)
         self.hotkeys = HotKeys(self.abilities_for_player)
 
         self.global_ticks = 0
         self.delta_ticks = 0
         self.offset = pg.math.Vector2()
-        self.create_map()
+        # self.create_map()
+        self.create_graveyard()
 
         self.pause_menu = Pause(self.display)
 
@@ -67,6 +73,17 @@ class Game:
                     ObstacleTile((self.visible_sprites, self.obstacle_sprite), pos)
                 elif tile == 'k':
                     Peasant((self.npc,), pos, self.player)
+
+    def create_graveyard(self):
+        tile_map = pg.image.load('sprite/tilemap_graveyard.png').convert_alpha()
+
+        for y, map_string in enumerate(GRAVEYARD_TILE_MAP):
+            for x, tile in enumerate(map_string):
+                pos = (x * TILE_SIZE, y * TILE_SIZE)
+                if tile == '0':
+                    GraveyardGraphics((self.visible_sprites, ), pos, tile_map, tile)
+                else:
+                    GraveyardGraphics((self.visible_sprites, self.obstacle_sprite), pos, tile_map, tile)
 
     def camera(self):
         previous_ticks = self.global_ticks
@@ -114,21 +131,15 @@ class Game:
 
         self.player = Player((), (50, 50), self.abilities_for_player, self.obstacle_sprite)
 
-        for y, map_string in enumerate(MAP):
-            for x, tile in enumerate(map_string):
-                pos = (x * TILE_SIZE, y * TILE_SIZE)
-                if tile == 'e':
-                    Sceleton((self.enemies,),
-                             pos,
+        Sceleton((self.enemies,),
+                 (500, 50),
                              self.all_abilities.get_abilities(['bullet']),
                              self.obstacle_sprite)
-                elif tile == 'f':
-                    FireElemental((self.enemies,),
-                                  pos,
+        FireElemental((self.enemies,),
+                      (500, 420),
                                   self.all_abilities.get_abilities(['fireball', 'bullet', 'frostbolt']),
                                   self.obstacle_sprite)
-                elif tile == 'k':
-                    Peasant((self.npc,), pos, self.player)
+        Peasant((self.npc,), (100, 100), self.player)
 
     def draw(self):
         self.camera()

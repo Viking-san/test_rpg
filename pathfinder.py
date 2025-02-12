@@ -40,13 +40,13 @@ class Pathfinder:
             self.path_rects.append(rect)
 
     def make_matrix(self):
-        for i, row in enumerate(MAP):
-            self.matrix.append([])
-            for col in row:
-                if col == 'w':
-                    self.matrix[i].append(0)
-                else:
-                    self.matrix[i].append(1)
+        for i, row in enumerate(GRAVEYARD_TILE_MAP):
+                self.matrix.append([])
+                for col in row:
+                    if col == '0':
+                        self.matrix[i].append(1)
+                    else:
+                        self.matrix[i].append(0)
 
     def draw_path(self, offset):
         for rect in self.path_rects:
