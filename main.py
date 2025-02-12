@@ -39,10 +39,6 @@ class Game:
         abilities_for_player = ['bullet', 'fireball', 'frostbolt', 'flame_strike', 'blizzard', 'blink']
         self.abilities_for_player = self.all_abilities.get_abilities(abilities_for_player)
         self.player = Player((), (50, 50), self.abilities_for_player, self.obstacle_sprite)
-        # FireElemental((self.enemies,),
-        #               (100, 50),
-        #               self.all_abilities.get_abilities(['fireball', 'bullet', 'frostbolt']),
-        #               self.obstacle_sprite)
         self.hotkeys = HotKeys(self.abilities_for_player)
 
         self.global_ticks = 0
