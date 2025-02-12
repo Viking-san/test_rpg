@@ -39,40 +39,20 @@ class Game:
         abilities_for_player = ['bullet', 'fireball', 'frostbolt', 'flame_strike', 'blizzard', 'blink']
         self.abilities_for_player = self.all_abilities.get_abilities(abilities_for_player)
         self.player = Player((), (50, 50), self.abilities_for_player, self.obstacle_sprite)
-        FireElemental((self.enemies,),
-                      (100, 50),
-                      self.all_abilities.get_abilities(['fireball', 'bullet', 'frostbolt']),
-                      self.obstacle_sprite)
+        # FireElemental((self.enemies,),
+        #               (100, 50),
+        #               self.all_abilities.get_abilities(['fireball', 'bullet', 'frostbolt']),
+        #               self.obstacle_sprite)
         self.hotkeys = HotKeys(self.abilities_for_player)
 
         self.global_ticks = 0
         self.delta_ticks = 0
         self.offset = pg.math.Vector2()
-        # self.create_map()
+
         self.create_graveyard()
+        self.restart()
 
         self.pause_menu = Pause(self.display)
-
-    def create_map(self):
-        for y, map_string in enumerate(MAP):
-            for x, tile in enumerate(map_string):
-                pos = (x * TILE_SIZE, y * TILE_SIZE)
-                if tile == 'x':
-                    Tile((self.visible_sprites,), pos)
-                elif tile == 'e':
-                    Sceleton((self.enemies,),
-                             pos,
-                             self.all_abilities.get_abilities(['bullet']),
-                             self.obstacle_sprite)
-                elif tile == 'f':
-                    FireElemental((self.enemies,),
-                                  pos,
-                                  self.all_abilities.get_abilities(['fireball', 'bullet', 'frostbolt']),
-                                  self.obstacle_sprite)
-                elif tile == 'w':
-                    ObstacleTile((self.visible_sprites, self.obstacle_sprite), pos)
-                elif tile == 'k':
-                    Peasant((self.npc,), pos, self.player)
 
     def create_graveyard(self):
         tile_map = pg.image.load('sprite/tilemap_graveyard.png').convert_alpha()
