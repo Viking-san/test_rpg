@@ -38,7 +38,7 @@ class Game:
 
         abilities_for_player = ['bullet', 'fireball', 'frostbolt', 'flame_strike', 'blizzard', 'blink']
         self.abilities_for_player = self.all_abilities.get_abilities(abilities_for_player)
-        self.player = Player((), (50, 50), self.abilities_for_player, self.obstacle_sprite)
+        self.player = Player((), (450, 450), self.abilities_for_player, self.obstacle_sprite)
         self.hotkeys = HotKeys(self.abilities_for_player)
 
         self.global_ticks = 0
@@ -51,15 +51,19 @@ class Game:
         self.pause_menu = Pause(self.display)
 
     def create_graveyard(self):
-        tile_map = pg.image.load('sprite/tilemap_graveyard.png').convert_alpha()
+        tile_map = pg.image.load('sprite/tiles/graveyard_source.png').convert_alpha()
+        Tile((self.visible_sprites, ), (0, 0))
 
         for y, map_string in enumerate(GRAVEYARD_TILE_MAP):
             for x, tile in enumerate(map_string):
                 pos = (x * TILE_SIZE, y * TILE_SIZE)
-                if tile == '0':
-                    GraveyardGraphics((self.visible_sprites, ), pos, tile_map, tile)
-                else:
+                print(tile)
+                if int(tile) > 0:
                     GraveyardGraphics((self.visible_sprites, self.obstacle_sprite), pos, tile_map, tile)
+                # if tile == '0':
+                #     GraveyardGraphics((self.visible_sprites, ), pos, tile_map, tile)
+                # else:
+                #     GraveyardGraphics((self.visible_sprites, self.obstacle_sprite), pos, tile_map, tile)
 
     def camera(self):
         previous_ticks = self.global_ticks
@@ -105,14 +109,14 @@ class Game:
     def restart(self):
         self.clear_sprites((self.enemies, self.bullets, self.enemy_bullet, self.npc))
 
-        self.player = Player((), (50, 50), self.abilities_for_player, self.obstacle_sprite)
+        self.player = Player((), (450, 450), self.abilities_for_player, self.obstacle_sprite)
 
         Sceleton((self.enemies,),
-                 (500, 50),
+                 (300, 160),
                              self.all_abilities.get_abilities(['bullet']),
                              self.obstacle_sprite)
         FireElemental((self.enemies,),
-                      (500, 420),
+                      (450, 460),
                                   self.all_abilities.get_abilities(['fireball', 'bullet', 'frostbolt']),
                                   self.obstacle_sprite)
         Peasant((self.npc,), (100, 100), self.player)

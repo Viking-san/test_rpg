@@ -2,7 +2,7 @@ import pygame as pg
 import csv
 
 
-with open('graveyard.csv', newline='') as f:
+with open('sprite/tiles/map_obstacles.csv', newline='') as f:
     reader = csv.reader(f)
     GRAVEYARD_TILE_MAP = list(reader)
 

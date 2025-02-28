@@ -43,7 +43,7 @@ class Pathfinder:
         for i, row in enumerate(GRAVEYARD_TILE_MAP):
                 self.matrix.append([])
                 for col in row:
-                    if col == '0':
+                    if col == '-1':
                         self.matrix[i].append(1)
                     else:
                         self.matrix[i].append(0)

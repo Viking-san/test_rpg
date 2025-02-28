@@ -5,7 +5,7 @@ from config import *
 class Tile(pg.sprite.Sprite):
     def __init__(self, groups, pos):
         super().__init__(groups)
-        self.image = pg.image.load('sprite/sand.png')
+        self.image = pg.image.load('sprite/tiles/map.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
 
 
